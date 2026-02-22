@@ -42,8 +42,14 @@ import sessionManager from './sessionManager.js';
 import gitRoutes from './routes/git.js';
 import authRoutes from './routes/auth.js';
 import mcpRoutes from './routes/mcp.js';
+import fileBrowserRoutes from './routes/file-browser.js';
+import remoteRoutes from './routes/remote.js';
 import { initializeDatabase } from './database/db.js';
 import { validateApiKey, authenticateToken, authenticateWebSocket } from './middleware/auth.js';
+import { ensureAppDirectories, loadConfig } from './config/appConfig.js';
+
+// Initialize app directories
+ensureAppDirectories();
 
 // File system watcher for projects folder
 let projectsWatcher = null;
@@ -176,6 +182,12 @@ app.use('/api/git', authenticateToken, gitRoutes);
 
 // MCP API Routes (protected)
 app.use('/api/mcp', authenticateToken, mcpRoutes);
+
+// File Browser Routes (protected)
+app.use('/api/file-browser', authenticateToken, fileBrowserRoutes);
+
+// Remote Instance Routes (protected)
+app.use('/api/remote', authenticateToken, remoteRoutes);
 
 // Static files served after API routes
 app.use(express.static(path.join(__dirname, '../dist')));

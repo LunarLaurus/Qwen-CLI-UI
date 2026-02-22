@@ -44,6 +44,7 @@ function ToolsSettings({ isOpen, onClose }) {
   const [mcpToolsLoading, setMcpToolsLoading] = useState({});
   const [activeTab, setActiveTab] = useState('tools');
   const [selectedModel, setSelectedModel] = useState('qwen3-coder-plus');
+  const [selectedTheme, setSelectedTheme] = useState('system');
   const [enableNotificationSound, setEnableNotificationSound] = useState(false);
 
   // Common tool patterns
@@ -64,9 +65,28 @@ function ToolsSettings({ isOpen, onClose }) {
     'WebSearch'
   ];
   
-  // Qwen model options - Only Qwen 3 Coder Plus available
+  // Qwen model options - Multiple models available
   const availableModels = [
-    { value: 'qwen3-coder-plus', label: 'Qwen 3 Coder Plus', description: 'Advanced Qwen coding model' }
+    { value: 'qwen3-coder-plus', label: 'Qwen 3 Coder Plus', description: 'Advanced Qwen coding model', provider: 'qwen' },
+    { value: 'qwen3-coder-flash', label: 'Qwen 3 Coder Flash', description: 'Fast Qwen coding model', provider: 'qwen' },
+    { value: 'qwen-2.5-coder-32b', label: 'Qwen 2.5 Coder 32B', description: 'Previous generation coding model', provider: 'qwen' },
+    { value: 'qwen-plus', label: 'Qwen Plus', description: 'Balanced Qwen model for general tasks', provider: 'qwen' },
+    { value: 'qwen-max', label: 'Qwen Max', description: 'Most capable Qwen model', provider: 'qwen' },
+    { value: 'qwen-turbo', label: 'Qwen Turbo', description: 'Fastest Qwen model for quick tasks', provider: 'qwen' }
+  ];
+
+  // Theme options
+  const availableThemes = [
+    { value: 'system', label: 'System Default', description: 'Follow system preference' },
+    { value: 'light', label: 'Light', description: 'Clean light theme' },
+    { value: 'dark', label: 'Dark', description: 'Classic dark theme' },
+    { value: 'midnight', label: 'Midnight', description: 'Deep blue dark theme' },
+    { value: 'ocean', label: 'Ocean', description: 'Blue-green ocean theme' },
+    { value: 'forest', label: 'Forest', description: 'Green forest theme' },
+    { value: 'sunset', label: 'Sunset', description: 'Warm orange theme' },
+    { value: 'monokai', label: 'Monokai', description: 'Classic monokai colors' },
+    { value: 'dracula', label: 'Dracula', description: 'Popular dracula theme' },
+    { value: 'nord', label: 'Nord', description: 'Arctic blue theme' }
   ];
 
   // MCP API functions

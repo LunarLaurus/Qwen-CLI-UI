@@ -6,11 +6,14 @@ A modern, responsive web-based user interface for Qwen Code CLI, providing an in
 
 - 🤖 **Interactive Chat Interface** - Seamless communication with Qwen AI assistant
 - 📁 **File Explorer** - Browse, view, and edit project files with syntax highlighting
+- 📂 **File Browser** - Select project folders from your file system with an integrated folder picker
 - 🔄 **Session Management** - Save, resume, and manage multiple chat sessions
-- 🎨 **Dark/Light Theme** - Customizable appearance with automatic theme detection
+- 🎨 **Multiple Themes** - 10+ color schemes including Dark, Light, Midnight, Ocean, Forest, Sunset, Monokai, Dracula, and Nord
 - 🛠️ **Integrated Terminal** - Built-in shell access for direct command execution
 - 📝 **Code Editor** - Monaco-based editor with syntax highlighting and IntelliSense
-- 🔒 **Secure Authentication** - JWT-based authentication system
+- 🔒 **Multi-User Authentication** - JWT-based authentication with support for multiple users and roles
+- 🌐 **Remote Instance Support** - Connect to headless remote instances for distributed workflows
+- 🤖 **Multiple AI Models** - Support for Qwen 3 Coder Plus/Flash, Qwen 2.5 Coder, Qwen Plus, Max, and Turbo
 - 📱 **Fully Responsive** - Optimized for desktop, tablet, and mobile devices
 
 ## Screenshots

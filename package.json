@@ -10,7 +10,10 @@
     "client": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && npm run server"
+    "start": "npm run build && npm run server",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "keywords": [
     "qwen",
@@ -62,6 +65,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
+    "jest": "^29.7.0",
     "postcss": "^8.4.32",
     "sharp": "^0.34.2",
     "tailwindcss": "^3.4.0",
