@@ -1,65 +1,53 @@
 #!/usr/bin/env python3
 """
 Generate audit-themes-ci.js from actual ThemeContext.jsx
-This ensures the audit script always uses the real theme data.
+Extracts lines 15-700 (THEMES object) and embeds in audit script.
 
 Usage:
   python scripts/generate-audit.py && npm run audit:wcag
 """
 
-import re
-
 # Read ThemeContext with UTF-8
 with open('src/contexts/ThemeContext.jsx', 'r', encoding='utf-8') as f:
-    content = f.read()
+    lines = f.readlines()
 
-# Extract THEMES object
-match = re.search(r'export const THEMES = (\{.+?\});\n', content, re.DOTALL)
-if not match:
-    print('ERROR: Could not find THEMES export')
+# Extract lines 15-700 (THEMES object: "export const THEMES = {" to "};")
+themes_lines = lines[14:700]  # 0-indexed, so line 15 is index 14
+themes_lines[0] = themes_lines[0].replace('export const THEMES = ', 'const THEMES = ')
+themes_data = ''.join(themes_lines)
+
+# Read the static part of audit script (after // Color pairs comment)
+with open('scripts/audit-themes-ci.js', 'r', encoding='utf-8') as f:
+    audit_content = f.read()
+
+# Find the // Color pairs comment
+marker = '// Color pairs to test'
+marker_idx = audit_content.find(marker)
+
+if marker_idx == -1:
+    print('ERROR: Could not find Color pairs marker')
     exit(1)
 
-themes_data = match.group(1)
+# Build new audit script: THEMES data + static part after marker
+# First find where the old THEMES definition ends
+old_themes_end = audit_content.find(marker)
+if old_themes_end == -1:
+    print('ERROR: Could not find end of THEMES')
+    exit(1)
 
-# Read audit script template with UTF-8
-with open('scripts/audit-themes-ci.js', 'r', encoding='utf-8') as f:
-    audit_template = f.read()
+# Find the beginning of the file up to where THEMES starts
+beginning_marker = 'import { getContrastRatioAny }'
+beginning_idx = audit_content.find(beginning_marker)
 
-# Replace THEMES_PLACEHOLDER with actual data
-# Try placeholder first, then try to replace the existing THEMES object
-if 'const THEMES_PLACEHOLDER = {};' in audit_template:
-    new_audit = audit_template.replace(
-        'const THEMES_PLACEHOLDER = {};',
-        f'const THEMES = {themes_data};'
-    )
-else:
-    # Replace existing THEMES object (from 'const THEMES = {' to the matching closing brace)
-    # Find the start of THEMES definition
-    themes_start = audit_template.find('const THEMES = {')
-    if themes_start == -1:
-        print('ERROR: Could not find THEMES in audit script')
-        exit(1)
-    
-    # Find the end by counting braces
-    brace_count = 0
-    themes_end = themes_start
-    started = False
-    for i, char in enumerate(audit_template[themes_start:]):
-        if char == '{':
-            brace_count += 1
-            started = True
-        elif char == '}':
-            brace_count -= 1
-        if started and brace_count == 0:
-            themes_end = themes_start + i + 1
-            break
-    
-    if themes_end == themes_start:
-        print('ERROR: Could not find end of THEMES object')
-        exit(1)
-    
-    # Replace the THEMES object
-    new_audit = audit_template[:themes_start] + f'const THEMES = {themes_data};' + audit_template[themes_end:]
+if beginning_idx == -1:
+    print('ERROR: Could not find beginning marker')
+    exit(1)
+
+# Get the imports part
+imports_part = audit_content[beginning_idx:audit_content.find('const THEMES')]
+
+# Build new audit script
+new_audit = imports_part + '\n' + themes_data + '\n' + audit_content[old_themes_end:]
 
 # Write updated audit script with UTF-8
 with open('scripts/audit-themes-ci.js', 'w', encoding='utf-8') as f:

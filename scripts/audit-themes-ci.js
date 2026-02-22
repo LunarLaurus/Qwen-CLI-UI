@@ -1,22 +1,7 @@
-#!/usr/bin/env node
-
-/**
- * WCAG Contrast CI Audit Script
- *
- * Validates ALL actual theme colors against WCAG 2.x AA requirements.
- * Theme data is embedded from ThemeContext.jsx by generate-audit.py
- *
- * Usage:
- *   node scripts/audit-themes-ci.js
- *
- * Returns:
- *   0 - All themes pass WCAG AA
- *   1 - One or more themes fail
- */
-
 import { getContrastRatioAny } from './contrast.js';
 
 // THEMES will be replaced by generate-audit.py with actual theme data
+
 const THEMES = {
   // ===== LIGHT THEMES =====
   system: {
@@ -702,7 +687,7 @@ const THEMES = {
       themeColor: '#2f3a4f'
     }
   }
-};;;;;;;;;;;;;;;;;;;;;
+};
 
 // Color pairs to test - ALL require 4.5:1
 const COLOR_PAIRS = [
