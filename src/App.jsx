@@ -425,12 +425,13 @@ function AppContent() {
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         {/* Backdrop */}
         <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 bg-modal-overlay backdrop-blur-sm"
+          style={{ backgroundColor: `hsl(var(--modal-overlay) / var(--modal-overlay-opacity))` }}
           onClick={() => setShowVersionModal(false)}
         />
         
         {/* Modal */}
-        <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md mx-4 p-6 space-y-4">
+        <div className="relative bg-card rounded-lg shadow-xl border border-border w-full max-w-md mx-4 p-6 space-y-4">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
