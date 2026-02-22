@@ -46,6 +46,9 @@ function ToolsSettings({ isOpen, onClose }) {
   const [selectedModel, setSelectedModel] = useState('qwen3-coder-plus');
   const [selectedTheme, setSelectedTheme] = useState('system');
   const [enableNotificationSound, setEnableNotificationSound] = useState(false);
+  const [multiUserEnabled, setMultiUserEnabled] = useState(false);
+  const [allowRegistration, setAllowRegistration] = useState(true);
+  const [maxUsers, setMaxUsers] = useState(10);
 
   // Common tool patterns
   const commonTools = [
@@ -306,10 +309,28 @@ function ToolsSettings({ isOpen, onClose }) {
 
   const loadSettings = async () => {
     try {
-      
+      const token = localStorage.getItem('auth-token');
+
+      // Load multi-user settings from server
+      try {
+        const statusResponse = await fetch('/api/auth/status', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (statusResponse.ok) {
+          const statusData = await statusResponse.json();
+          setMultiUserEnabled(statusData.multiUserEnabled || false);
+          setAllowRegistration(statusData.registrationAllowed || true);
+          setMaxUsers(statusData.maxUsers || 10);
+        }
+      } catch (e) {
+        // console.error('Failed to load multi-user settings:', e);
+      }
+
       // Load from localStorage
       const savedSettings = localStorage.getItem('qwen-tools-settings') || localStorage.getItem('qwen-tools-settings');
-      
+
       if (savedSettings) {
         const settings = JSON.parse(savedSettings);
         setAllowedTools(settings.allowedTools || []);
@@ -338,11 +359,31 @@ function ToolsSettings({ isOpen, onClose }) {
     }
   };
 
-  const saveSettings = () => {
+  const saveSettings = async () => {
     setIsSaving(true);
     setSaveStatus(null);
-    
+
     try {
+      const token = localStorage.getItem('auth-token');
+
+      // Save multi-user settings to server
+      try {
+        await fetch('/api/auth/settings', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            multiUserEnabled,
+            allowRegistration,
+            maxUsers
+          })
+        });
+      } catch (e) {
+        // console.error('Failed to save multi-user settings:', e);
+      }
+
       const settings = {
         allowedTools,
         disallowedTools,
@@ -352,11 +393,11 @@ function ToolsSettings({ isOpen, onClose }) {
         enableNotificationSound,
         lastUpdated: new Date().toISOString()
       };
-      
-      
+
+
       // Save to localStorage
       localStorage.setItem('qwen-tools-settings', JSON.stringify(settings));
-      
+
       // Trigger storage event for current window
       window.dispatchEvent(new StorageEvent('storage', {
         key: 'qwen-tools-settings',
@@ -365,9 +406,9 @@ function ToolsSettings({ isOpen, onClose }) {
         storageArea: localStorage,
         url: window.location.href
       }));
-      
+
       setSaveStatus('success');
-      
+
       setTimeout(() => {
         onClose();
       }, 1000);
@@ -775,6 +816,78 @@ function ToolsSettings({ isOpen, onClose }) {
                     </button>
                   )}
                 </div>
+              </div>
+            </div>
+
+            {/* Multi-User Settings */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-purple-500" />
+                <h3 className="text-lg font-medium text-foreground">
+                  Multi-User Mode
+                </h3>
+              </div>
+              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 space-y-4">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={multiUserEnabled}
+                    onChange={(e) => setMultiUserEnabled(e.target.checked)}
+                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                  />
+                  <div>
+                    <div className="font-medium text-purple-900 dark:text-purple-100">
+                      Enable Multi-User Mode
+                    </div>
+                    <div className="text-sm text-purple-700 dark:text-purple-300">
+                      Allow multiple users to register and use this instance
+                    </div>
+                  </div>
+                </label>
+
+                {multiUserEnabled && (
+                  <>
+                    <label className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={allowRegistration}
+                        onChange={(e) => setAllowRegistration(e.target.checked)}
+                        className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                      />
+                      <div>
+                        <div className="font-medium text-purple-900 dark:text-purple-100">
+                          Allow New Registrations
+                        </div>
+                        <div className="text-sm text-purple-700 dark:text-purple-300">
+                          Allow new users to create accounts
+                        </div>
+                      </div>
+                    </label>
+
+                    <div>
+                      <label className="block text-sm font-medium text-purple-900 dark:text-purple-100 mb-2">
+                        Maximum Users
+                      </label>
+                      <input
+                        type="number"
+                        value={maxUsers}
+                        onChange={(e) => setMaxUsers(parseInt(e.target.value) || 0)}
+                        min="1"
+                        max="100"
+                        className="w-full px-3 py-2 border border-purple-200 dark:border-purple-700 bg-white dark:bg-gray-800 text-purple-900 dark:text-purple-100 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                      />
+                      <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
+                        Maximum number of users allowed (0 = unlimited)
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {!multiUserEnabled && (
+                  <p className="text-sm text-purple-700 dark:text-purple-300">
+                    Currently in single-user mode. Only one account exists on this instance.
+                  </p>
+                )}
               </div>
             </div>
 

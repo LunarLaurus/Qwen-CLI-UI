@@ -82,11 +82,22 @@ async function extractProjectDirectory(projectName) {
   let latestTimestamp = 0;
   let latestCwd = null;
   let extractedPath;
-  
+
   try {
-    const files = await fs.readdir(projectDir);
-    const jsonlFiles = files.filter(file => file.endsWith('.jsonl'));
+    // Check for JSONL files in both the project root and chats subdirectory
+    let jsonlFiles = [];
     
+    // First try the chats subdirectory (newer Qwen CLI structure)
+    const chatsDir = path.join(projectDir, 'chats');
+    try {
+      const chatsFiles = await fs.readdir(chatsDir);
+      jsonlFiles = chatsFiles.filter(file => file.endsWith('.jsonl')).map(f => path.join('chats', f));
+    } catch (e) {
+      // chats directory doesn't exist, try root directory
+      const files = await fs.readdir(projectDir);
+      jsonlFiles = files.filter(file => file.endsWith('.jsonl'));
+    }
+
     if (jsonlFiles.length === 0) {
       // Fall back to decoded project name if no sessions
       // First try to decode from base64

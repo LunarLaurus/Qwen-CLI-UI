@@ -98,11 +98,12 @@ temp/
 # Vite
 .vite/
 
-# Local Netlify folder
-.netlify
-
 # Claude specific
 .claude/
+
+# Qwen CLI UI specific
+.qwen/
+agent-config.json
 
 # Database files
 *.db

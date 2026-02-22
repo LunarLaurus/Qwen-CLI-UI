@@ -33,10 +33,10 @@ const initializeDatabase = async () => {
 
 // User database operations
 const userDb = {
-  // Check if any users exist
+  // Check if any active users exist
   hasUsers: () => {
     try {
-      const row = db.prepare('SELECT COUNT(*) as count FROM qwencliui_users').get();
+      const row = db.prepare('SELECT COUNT(*) as count FROM qwencliui_users WHERE is_active = 1').get();
       return row.count > 0;
     } catch (err) {
       throw err;

@@ -9,11 +9,21 @@
     "server": "node server/index.js",
     "client": "vite --host",
     "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:clean": "vite build --force",
     "preview": "vite preview",
     "start": "npm run build && npm run server",
+    "start:dev": "npm run build:dev && npm run server",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "lint": "eslint src/ server/ --ext .js,.jsx --ignore-pattern node_modules --ignore-pattern dist",
+    "lint:fix": "eslint src/ server/ --ext .js,.jsx --fix",
+    "typecheck": "tsc --noEmit --jsx react --skipLibCheck",
+    "clean": "rimraf dist node_modules/.vite",
+    "rebuild": "npm run clean && npm install && npm run build",
+    "build:win": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1",
+    "build:unix": "bash scripts/build.sh"
   },
   "keywords": [
     "qwen",
