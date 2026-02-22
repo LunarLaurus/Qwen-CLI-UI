@@ -350,3 +350,88 @@ CREATE TABLE qwencliui_messages (
 - `LICENSE` - MIT License
 - `public/convert-icons.md` - Icon conversion utilities
 - `public/generate-icons.js` - PWA icon generator
+
+---
+
+## Agent Operations & Planning
+
+### Planning Documents
+
+This project uses two key documents for agent coordination and session tracking:
+
+| Document | Purpose | When to Update |
+|----------|---------|----------------|
+| **AGENT_PLAN.md** | Agent execution tracking, task assignments, progress monitoring | Before/during agent deployment |
+| **WORK_IN_PROGRESS.md** | Session history, feature status, architecture documentation | End of each session |
+
+### Agent Deployment Workflow
+
+1. **Create/Update AGENT_PLAN.md** before deploying agents:
+   - Define mission objectives with clear success criteria
+   - Assign tasks to appropriate agent types
+   - Set progress tracking (0-100%)
+
+2. **Deploy agents in parallel** when tasks are independent:
+   - Use `general-purpose` for research, file operations, testing
+   - Use `axiom-code-reviewer` for code implementation, refactoring
+   - Provide detailed prompts with context, file paths, expected outcomes
+
+3. **Update AGENT_PLAN.md** after agent completion:
+   - Mark tasks complete with actual progress
+   - Document any issues or follow-up needed
+
+4. **Update WORK_IN_PROGRESS.md** at session end:
+   - Add new phase/session with checklist
+   - Document architecture changes
+   - Update theme system status (if applicable)
+
+### Example: WCAG AA Compliance Mission
+
+```markdown
+## WCAG 2.x AA Compliance Mission
+
+### Parallel Agent Deployment
+
+| Agent | Task | Themes | Result |
+|-------|------|--------|--------|
+| Agent 1 | Light theme foregrounds | alpine, sage, lavender, sand | ✅ 100% |
+| Agent 2 | Light pride foregrounds | trans, lesbian, bi, pan, nonbinary, rainbow | ✅ 100% |
+| Agent 3 | Dark theme foregrounds | midnight, ocean, forest, sunset, monokai, dracula, nord | ✅ 100% |
+| Agent 4 | Dark pride foregrounds | trans, lesbian, bi, pan, nonbinary, rainbow | ✅ 100% |
+
+### Final Audit Results
+- Total Themes Audited: 25
+- Compliant Themes: 25 ✓
+- Overall Pass Rate: 100%
+```
+
+### Infrastructure Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `scripts/generate-audit.py` | Extracts THEMES from ThemeContext.jsx | `python scripts/generate-audit.py` |
+| `scripts/audit-themes-ci.js` | WCAG audit with embedded theme data | `npm run audit:wcag` |
+| `scripts/audit-sync.py` | Sync ThemeContext to test folder | `python scripts/audit-sync.py` |
+| `scripts/fix-contrast.py` | Auto-fix foreground colors | `python scripts/fix-contrast.py` |
+
+### WCAG Contrast Specification
+
+See `docs/WCAG_CONTRAST_SPEC.md` for:
+- WCAG 2.x AA requirements (4.5:1 for normal text, 3.0:1 for large text)
+- Luminance calculation formulas
+- Contrast ratio algorithm
+- Black/white text selection policy
+- Remediation procedures
+
+### Theme System Status
+
+**Current State:** 100% WCAG AA Compliant
+
+| Category | Themes | Status |
+|----------|--------|--------|
+| Light themes | light, alpine, sage, lavender, sand | ✅ 100% |
+| Light pride themes | trans, lesbian, bi, pan, nonbinary, rainbow | ✅ 100% |
+| Dark themes | dark, midnight, ocean, forest, sunset, monokai, dracula, nord | ✅ 100% |
+| Dark pride themes | trans, lesbian, bi, pan, nonbinary, rainbow | ✅ 100% |
+
+**Total:** 25 themes, 200 color pairs, 0 failures
