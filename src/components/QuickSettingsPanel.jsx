@@ -14,7 +14,6 @@ import {
   FileText,
   Palette
 } from 'lucide-react';
-import DarkModeToggle from './DarkModeToggle';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemePreviewCard, { ThemePreviewMini } from './ui/ThemePreviewCard';
 
@@ -86,14 +85,6 @@ const QuickSettingsPanel = ({
             {/* Appearance Settings */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Appearance</h4>
-
-              <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-transparent hover:border-gray-300 dark:hover:border-gray-600">
-                <span className="flex items-center gap-2 text-sm text-gray-900 dark:text-white">
-                  {isDarkMode ? <Moon className="h-4 w-4 text-gray-600 dark:text-gray-400" /> : <Sun className="h-4 w-4 text-gray-600 dark:text-gray-400" />}
-                  Theme
-                </span>
-                <DarkModeToggle />
-              </div>
 
               <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2 mb-2">

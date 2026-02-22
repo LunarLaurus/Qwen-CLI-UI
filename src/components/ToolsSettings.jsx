@@ -9,7 +9,7 @@ import ThemePreviewCard from './ui/ThemePreviewCard';
 import { playNotificationSound } from '../utils/notificationSound';
 
 function ToolsSettings({ isOpen, onClose }) {
-  const { isDarkMode, toggleDarkMode, currentTheme, setTheme, themes } = useTheme();
+  const { isDarkMode, currentTheme, setTheme, themes } = useTheme();
   const [allowedTools, setAllowedTools] = useState([]);
   const [disallowedTools, setDisallowedTools] = useState([]);
   const [newAllowedTool, setNewAllowedTool] = useState('');
