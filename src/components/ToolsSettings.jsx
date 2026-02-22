@@ -629,127 +629,69 @@ function ToolsSettings({ isOpen, onClose }) {
             {/* Appearance Tab */}
             {activeTab === 'appearance' && (
               <div className="space-y-6 md:space-y-8">
-               {activeTab === 'appearance' && (
-  <div className="space-y-6 md:space-y-8">
-    {/* Theme Settings */}
-    <div className="space-y-4">
-      <div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-medium text-foreground">
-              Dark Mode
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Toggle between light and dark themes
-            </div>
-          </div>
-          <button
-            onClick={toggleDarkMode}
-            className="relative inline-flex h-8 w-14 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            role="switch"
-            aria-checked={isDarkMode}
-            aria-label="Toggle dark mode"
-          >
-            <span className="sr-only">Toggle dark mode</span>
-            <span
-              className={`${
-                isDarkMode ? 'translate-x-7' : 'translate-x-1'
-              } inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-200 flex items-center justify-center`}
-            >
-              {isDarkMode ? (
-                <Moon className="w-3.5 h-3.5 text-gray-700" />
-              ) : (
-                <Sun className="w-3.5 h-3.5 text-yellow-500" />
-              )}
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
+                {/* Theme Selection */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Palette className="w-5 h-5 text-purple-500" />
+                    <h3 className="text-lg font-medium text-foreground">
+                      Theme & Appearance
+                    </h3>
+                  </div>
+                  
+                  <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                    <p className="text-sm text-foreground">
+                      Select a theme from the options below to customize your interface colors
+                    </p>
+                  </div>
+                </div>
 
-    {/* Project Sorting */}
-    <div className="space-y-4">
-      <div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-medium text-foreground">
-              Project Sorting
-            </div>
-            <div className="text-sm text-muted-foreground">
-              How projects are ordered in the sidebar
-            </div>
-          </div>
-          <select
-            value={projectSortOrder}
-            onChange={(e) => setProjectSortOrder(e.target.value)}
-            className="text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 w-32"
-          >
-            <option value="name">Alphabetical</option>
-            <option value="date">Recent Activity</option>
-          </select>
-        </div>
-      </div>
-    </div>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                  <label className="block text-sm font-medium text-foreground mb-3">
+                    Select Theme
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto p-1">
+                    {Object.entries(themes)
+                      .filter(([_, theme]) => !theme.followsSystem)
+                      .sort(([_, a], [__, b]) => {
+                        if (a.isDark === b.isDark) return a.name.localeCompare(b.name);
+                        return a.isDark ? 1 : -1;
+                      })
+                      .map(([value, theme]) => (
+                        <ThemePreviewCard
+                          key={value}
+                          theme={theme}
+                          isSelected={currentTheme === value}
+                          onClick={() => setTheme(value)}
+                          size="medium"
+                        />
+                      ))}
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-3">
+                    {themes[currentTheme]?.followsSystem
+                      ? 'Automatically follows your system preference for light/dark mode'
+                      : `${themes[currentTheme]?.isDark ? 'Dark' : 'Light'} theme with custom color palette`}
+                  </p>
+                </div>
 
-    {/* Theme Selection */}
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <Sun className="w-5 h-5 text-yellow-500" />
-        <h3 className="text-lg font-medium text-foreground">
-          Theme Selection
-        </h3>
-      </div>
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <label className="block text-sm font-medium text-foreground mb-3">
-          Select Theme
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto p-1">
-          {Object.entries(themes)
-            .filter(([_, theme]) => !theme.followsSystem) // Skip system theme in grid
-            .sort(([_, a], [__, b]) => {
-              // Sort: Light themes first, then Dark themes
-              if (a.isDark === b.isDark) return a.name.localeCompare(b.name);
-              return a.isDark ? 1 : -1;
-            })
-            .map(([value, theme]) => (
-              <ThemePreviewCard
-                key={value}
-                theme={theme}
-                isSelected={currentTheme === value}
-                onClick={() => setTheme(value)}
-                size="medium"
-              />
-            ))}
-        </div>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mt-3">
-          {themes[currentTheme]?.followsSystem
-            ? 'Automatically follows your system preference for light/dark mode'
-            : `${themes[currentTheme]?.isDark ? 'Dark' : 'Light'} theme with custom color palette`}
-        </p>
-      </div>
-      {/* System theme option */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
-            type="radio"
-            name="theme"
-            checked={currentTheme === 'system'}
-            onChange={() => setTheme('system')}
-            className="w-4 h-4 text-blue-600"
-          />
-          <div className="flex items-center gap-2">
-            <Monitor className="w-4 h-4 text-blue-500" />
-            <span className="font-medium text-foreground">System Default</span>
-          </div>
-        </label>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
-          Automatically switch between light and dark modes based on your OS settings
-        </p>
-      </div>
-    </div>
-  </div>
-)}
-
+                {/* System theme option */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="theme"
+                      checked={currentTheme === 'system'}
+                      onChange={() => setTheme('system')}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <div className="flex items-center gap-2">
+                      <Monitor className="w-4 h-4 text-blue-500" />
+                      <span className="font-medium text-foreground">System Default</span>
+                    </div>
+                  </label>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                    Automatically switch between light and dark modes based on your OS settings
+                  </p>
+                </div>
               </div>
             )}
 
