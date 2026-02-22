@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * WCAG Contrast CI Audit Script
+ * WCAG Contrast CI Audit Script - REAL THEMES
  *
- * Validates all theme colors against WCAG 2.x AA requirements.
+ * Validates ALL actual theme colors from ThemeContext.jsx against WCAG 2.x AA requirements.
  * Exits with code 1 if any theme fails contrast requirements.
  *
  * Usage:
@@ -14,11 +14,13 @@
  *   1 - One or more themes fail
  */
 
-import { getContrastRatioAny, getRelativeLuminance, parseColor } from '../src/utils/contrast.js';
+import { getContrastRatioAny } from '../src/utils/contrast.js';
 
-// Mock theme import (in real CI, would import from built bundle)
+// Import actual themes from ThemeContext (embedded copy for CI compatibility)
 const THEMES = {
   system: { name: 'System Default', followsSystem: true },
+  
+  // ===== LIGHT THEMES =====
   light: {
     name: 'Light',
     isDark: false,
@@ -27,8 +29,6 @@ const THEMES = {
       foreground: '222.2 84% 4.9%',
       card: '0 0% 100%',
       cardForeground: '222.2 84% 4.9%',
-      popover: '0 0% 100%',
-      popoverForeground: '222.2 84% 4.9%',
       primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '210 40% 96.1%',
@@ -37,23 +37,198 @@ const THEMES = {
       mutedForeground: '215.4 16.3% 40%',
       accent: '210 40% 96.1%',
       accentForeground: '222.2 47.4% 11.2%',
-      destructive: '0 72% 50%',
-      destructiveForeground: '0 0% 100%',
-      border: '214.3 31.8% 91.4%',
-      input: '214.3 31.8% 91.4%',
-      ring: '15 89% 40%'
+      destructive: '0 84% 60%',
+      destructiveForeground: '0 0% 100%'
     }
   },
+  alpine: {
+    name: 'Alpine',
+    isDark: false,
+    colors: {
+      background: '200 100% 98%',
+      foreground: '200 100% 15%',
+      primary: '200 100% 35%',
+      primaryForeground: '0 0% 100%',
+      secondary: '190 90% 40%',
+      secondaryForeground: '0 0% 100%',
+      muted: '200 30% 94%',
+      mutedForeground: '200 40% 35%',
+      accent: '180 80% 40%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  sage: {
+    name: 'Sage',
+    isDark: false,
+    colors: {
+      background: '140 50% 97%',
+      foreground: '140 80% 12%',
+      primary: '140 70% 35%',
+      primaryForeground: '0 0% 100%',
+      secondary: '150 60% 35%',
+      secondaryForeground: '0 0% 100%',
+      muted: '140 30% 92%',
+      mutedForeground: '140 40% 30%',
+      accent: '70 70% 35%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  lavender: {
+    name: 'Lavender',
+    isDark: false,
+    colors: {
+      background: '270 50% 97%',
+      foreground: '270 80% 18%',
+      primary: '270 70% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '280 70% 50%',
+      secondaryForeground: '0 0% 100%',
+      muted: '270 30% 94%',
+      mutedForeground: '270 40% 40%',
+      accent: '300 70% 50%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  sand: {
+    name: 'Sand',
+    isDark: false,
+    colors: {
+      background: '35 50% 97%',
+      foreground: '35 80% 15%',
+      primary: '35 90% 40%',
+      primaryForeground: '0 0% 100%',
+      secondary: '37 85% 45%',
+      secondaryForeground: '0 0% 100%',
+      muted: '35 30% 92%',
+      mutedForeground: '35 40% 35%',
+      accent: '45 70% 40%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'trans-pride-light': {
+    name: 'Trans Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '195 50% 97%',
+      foreground: '195 60% 15%',
+      primary: '195 75% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '350 65% 55%',
+      secondaryForeground: '0 0% 100%',
+      muted: '195 30% 94%',
+      mutedForeground: '195 40% 35%',
+      accent: '0 0% 80%',
+      accentForeground: '0 0% 15%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'lesbian-pride-light': {
+    name: 'Lesbian Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '15 40% 97%',
+      foreground: '15 50% 15%',
+      primary: '15 100% 40%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 90% 55%',
+      secondaryForeground: '0 0% 100%',
+      muted: '30 30% 94%',
+      mutedForeground: '30 40% 35%',
+      accent: '330 70% 45%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'bi-pride-light': {
+    name: 'Bi Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '330 40% 97%',
+      foreground: '330 50% 15%',
+      primary: '330 100% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '280 60% 50%',
+      secondaryForeground: '0 0% 100%',
+      muted: '330 30% 94%',
+      mutedForeground: '330 40% 35%',
+      accent: '220 100% 55%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'pan-pride-light': {
+    name: 'Pan Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '330 35% 97%',
+      foreground: '330 45% 15%',
+      primary: '330 100% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 100% 45%',
+      secondaryForeground: '0 0% 100%',
+      muted: '330 30% 94%',
+      mutedForeground: '330 40% 35%',
+      accent: '200 100% 45%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'nonbinary-pride-light': {
+    name: 'Non-Binary Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '55 35% 96%',
+      foreground: '55 40% 18%',
+      primary: '55 100% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '0 0% 85%',
+      secondaryForeground: '0 0% 15%',
+      muted: '55 30% 92%',
+      mutedForeground: '55 40% 35%',
+      accent: '270 60% 50%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'rainbow-pride-light': {
+    name: 'Rainbow Pride (Light)',
+    isDark: false,
+    colors: {
+      background: '0 30% 97%',
+      foreground: '0 35% 15%',
+      primary: '0 100% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 100% 45%',
+      secondaryForeground: '0 0% 100%',
+      muted: '0 20% 94%',
+      mutedForeground: '0 30% 35%',
+      accent: '50 100% 40%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  
+  // ===== DARK THEMES =====
   dark: {
     name: 'Dark',
     isDark: true,
     colors: {
       background: '222.2 84% 8%',
       foreground: '210 40% 95%',
-      card: '217.2 91.2% 10%',
-      cardForeground: '210 40% 95%',
-      popover: '217.2 91.2% 10%',
-      popoverForeground: '210 40% 95%',
       primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '217.2 32.6% 17.5%',
@@ -63,24 +238,246 @@ const THEMES = {
       accent: '217.2 32.6% 17.5%',
       accentForeground: '210 40% 98%',
       destructive: '0 72% 50%',
-      destructiveForeground: '0 0% 100%',
-      border: '217.2 32.6% 20%',
-      input: '217.2 32.6% 20%',
-      ring: '15 89% 40%'
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  midnight: {
+    name: 'Midnight',
+    isDark: true,
+    colors: {
+      background: '222.2 84% 8%',
+      foreground: '210 40% 95%',
+      primary: '210 100% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '217.2 32.6% 17.5%',
+      secondaryForeground: '210 40% 98%',
+      muted: '217.2 32.6% 17.5%',
+      mutedForeground: '215 20.2% 70%',
+      accent: '217.2 32.6% 17.5%',
+      accentForeground: '210 40% 98%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  ocean: {
+    name: 'Ocean',
+    isDark: true,
+    colors: {
+      background: '200 70% 10%',
+      foreground: '200 40% 92%',
+      primary: '180 80% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '200 60% 18%',
+      secondaryForeground: '200 40% 92%',
+      muted: '200 50% 18%',
+      mutedForeground: '200 30% 70%',
+      accent: '200 60% 18%',
+      accentForeground: '200 40% 92%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  forest: {
+    name: 'Forest',
+    isDark: true,
+    colors: {
+      background: '140 45% 10%',
+      foreground: '140 30% 92%',
+      primary: '140 70% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '140 40% 18%',
+      secondaryForeground: '140 30% 92%',
+      muted: '140 35% 18%',
+      mutedForeground: '140 30% 70%',
+      accent: '140 40% 18%',
+      accentForeground: '140 30% 92%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  sunset: {
+    name: 'Sunset',
+    isDark: true,
+    colors: {
+      background: '30 45% 12%',
+      foreground: '30 40% 92%',
+      primary: '30 90% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 40% 20%',
+      secondaryForeground: '30 40% 92%',
+      muted: '30 35% 20%',
+      mutedForeground: '30 30% 70%',
+      accent: '30 40% 20%',
+      accentForeground: '30 40% 92%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  monokai: {
+    name: 'Monokai',
+    isDark: true,
+    colors: {
+      background: '45 10% 15%',
+      foreground: '45 10% 90%',
+      primary: '45 100% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 20% 25%',
+      secondaryForeground: '45 10% 90%',
+      muted: '45 20% 25%',
+      mutedForeground: '45 10% 70%',
+      accent: '45 20% 25%',
+      accentForeground: '45 10% 90%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  dracula: {
+    name: 'Dracula',
+    isDark: true,
+    colors: {
+      background: '260 20% 15%',
+      foreground: '260 20% 90%',
+      primary: '320 80% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '260 30% 25%',
+      secondaryForeground: '260 20% 90%',
+      muted: '260 30% 25%',
+      mutedForeground: '260 20% 70%',
+      accent: '260 30% 25%',
+      accentForeground: '260 20% 90%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  nord: {
+    name: 'Nord',
+    isDark: true,
+    colors: {
+      background: '210 30% 18%',
+      foreground: '210 30% 90%',
+      primary: '190 50% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '210 25% 28%',
+      secondaryForeground: '210 30% 90%',
+      muted: '210 25% 28%',
+      mutedForeground: '210 20% 70%',
+      accent: '210 25% 28%',
+      accentForeground: '210 30% 90%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'trans-pride': {
+    name: 'Trans Pride',
+    isDark: true,
+    colors: {
+      background: '195 40% 15%',
+      foreground: '195 50% 90%',
+      primary: '195 75% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '350 65% 65%',
+      secondaryForeground: '350 40% 15%',
+      muted: '195 30% 22%',
+      mutedForeground: '195 40% 70%',
+      accent: '0 0% 80%',
+      accentForeground: '0 0% 15%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'lesbian-pride': {
+    name: 'Lesbian Pride',
+    isDark: true,
+    colors: {
+      background: '15 35% 15%',
+      foreground: '15 40% 90%',
+      primary: '15 100% 50%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 90% 60%',
+      secondaryForeground: '30 40% 15%',
+      muted: '15 30% 22%',
+      mutedForeground: '15 40% 70%',
+      accent: '330 70% 55%',
+      accentForeground: '330 40% 15%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'bi-pride': {
+    name: 'Bi Pride',
+    isDark: true,
+    colors: {
+      background: '280 40% 15%',
+      foreground: '280 30% 90%',
+      primary: '330 100% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '280 60% 55%',
+      secondaryForeground: '0 0% 100%',
+      muted: '280 30% 22%',
+      mutedForeground: '280 20% 75%',
+      accent: '220 100% 60%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'pan-pride': {
+    name: 'Pan Pride',
+    isDark: true,
+    colors: {
+      background: '330 35% 15%',
+      foreground: '330 30% 90%',
+      primary: '330 100% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 100% 50%',
+      secondaryForeground: '0 0% 100%',
+      muted: '330 30% 22%',
+      mutedForeground: '330 20% 75%',
+      accent: '200 100% 55%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'nonbinary-pride': {
+    name: 'Non-Binary Pride',
+    isDark: true,
+    colors: {
+      background: '55 30% 15%',
+      foreground: '55 35% 90%',
+      primary: '55 100% 50%',
+      primaryForeground: '55 40% 15%',
+      secondary: '0 0% 85%',
+      secondaryForeground: '0 0% 15%',
+      muted: '55 25% 22%',
+      mutedForeground: '55 35% 70%',
+      accent: '270 60% 60%',
+      accentForeground: '270 40% 15%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
+    }
+  },
+  'rainbow-pride': {
+    name: 'Rainbow Pride',
+    isDark: true,
+    colors: {
+      background: '220 40% 14%',
+      foreground: '220 30% 90%',
+      primary: '0 100% 55%',
+      primaryForeground: '0 40% 95%',
+      secondary: '45 100% 50%',
+      secondaryForeground: '45 40% 15%',
+      muted: '220 30% 22%',
+      mutedForeground: '220 20% 70%',
+      accent: '140 80% 40%',
+      accentForeground: '140 40% 95%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%'
     }
   }
-  // Additional themes would be loaded from actual ThemeContext in real CI
 };
 
-// WCAG 2.x AA requirements
-const WCAG_AA = {
-  normal: { ratio: 4.5, label: 'Normal text (< 18pt)' },
-  large: { ratio: 3.0, label: 'Large text (≥ 18pt)' }
-};
-
-// Color pairs to test
-// Note: As of 2026-02-22, primary color uses darker orange (#c2410c)
-// which passes 4.5:1 WCAG AA with white text.
+// Color pairs to test - ALL require 4.5:1
 const COLOR_PAIRS = [
   { fg: 'foreground', bg: 'background', label: 'Body text', required: 4.5 },
   { fg: 'cardForeground', bg: 'card', label: 'Card text', required: 4.5 },
@@ -91,13 +488,6 @@ const COLOR_PAIRS = [
   { fg: 'mutedForeground', bg: 'muted', label: 'Muted text', required: 4.5 },
   { fg: 'destructiveForeground', bg: 'destructive', label: 'Destructive text', required: 4.5 }
 ];
-
-/**
- * Format color for display
- */
-function formatColor(hsl) {
-  return hsl;
-}
 
 /**
  * Audit a single theme with custom requirements per pair
@@ -151,7 +541,7 @@ function auditThemeWithRequirements(theme) {
  */
 function runAudit() {
   console.log('\n╔════════════════════════════════════════════════════════╗');
-  console.log('║     WCAG 2.x AA Contrast Audit (CI Mode)              ║');
+  console.log('║     WCAG 2.x AA Contrast Audit (REAL THEMES)          ║');
   console.log('╚════════════════════════════════════════════════════════╝\n');
 
   let totalThemes = 0;
@@ -162,7 +552,7 @@ function runAudit() {
   let failedPairs = 0;
   const criticalIssues = [];
 
-  // Audit each theme
+  // Audit each theme from ThemeContext
   Object.entries(THEMES).forEach(([key, theme]) => {
     if (theme.followsSystem) return;
 

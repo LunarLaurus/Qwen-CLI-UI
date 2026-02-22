@@ -12,7 +12,7 @@ export const useTheme = () => {
 
 // Theme color definitions (HSL values)
 // Organized: Light themes first, then Dark themes
-const THEMES = {
+export const THEMES = {
   // ===== LIGHT THEMES =====
   system: {
     name: 'System Default',
