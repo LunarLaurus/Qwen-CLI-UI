@@ -21,6 +21,7 @@ import ReactMarkdown from 'react-markdown';
 import { useDropzone } from 'react-dropzone';
 import TodoList from './TodoList';
 import QwenLogo from './QwenLogo.jsx';
+import { useTheme } from '../contexts/ThemeContext';
 
 import QwenStatus from './QwenStatus';
 import { MicButton } from './MicButton.jsx';
@@ -1182,6 +1183,7 @@ const ImageAttachment = ({ file, onRemove, uploadProgress, error }) => {
 //
 // This ensures uninterrupted chat experience by pausing sidebar refreshes during conversations.
 function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, messages, onFileOpen, onInputFocusChange, onSessionActive, onSessionInactive, onReplaceTemporarySession, onNavigateToSession, onShowSettings, autoExpandTools, showRawParameters, autoScrollToBottom }) {
+  const { isDarkMode } = useTheme();
   const [input, setInput] = useState(() => {
     if (typeof window !== 'undefined' && selectedProject) {
       return localStorage.getItem(`draft_input_${selectedProject.name}`) || '';
