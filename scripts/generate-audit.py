@@ -6,8 +6,8 @@ This ensures the audit script always uses the real theme data.
 
 import re
 
-# Read ThemeContext
-with open('src/contexts/ThemeContext.jsx', 'r') as f:
+# Read ThemeContext with UTF-8
+with open('src/contexts/ThemeContext.jsx', 'r', encoding='utf-8') as f:
     content = f.read()
 
 # Extract THEMES object
@@ -18,8 +18,8 @@ if not match:
 
 themes_data = match.group(1)
 
-# Read audit script template
-with open('scripts/audit-themes-ci.js', 'r') as f:
+# Read audit script template with UTF-8
+with open('scripts/audit-themes-ci.js', 'r', encoding='utf-8') as f:
     audit_template = f.read()
 
 # Replace embedded THEMES with actual data
@@ -31,8 +31,8 @@ new_audit = re.sub(
     flags=re.DOTALL
 )
 
-# Write updated audit script
-with open('scripts/audit-themes-ci.js', 'w') as f:
+# Write updated audit script with UTF-8
+with open('scripts/audit-themes-ci.js', 'w', encoding='utf-8') as f:
     f.write(new_audit)
 
 print('Generated audit-themes-ci.js from ThemeContext.jsx')
