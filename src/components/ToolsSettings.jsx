@@ -5,6 +5,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Badge } from './ui/badge';
 import { X, Plus, Settings, Shield, AlertTriangle, Moon, Sun, Server, Edit3, Trash2, Play, Globe, Terminal, Zap, Volume2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { playNotificationSound } from '../utils/notificationSound';
 
 function ToolsSettings({ isOpen, onClose }) {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -737,10 +738,9 @@ function ToolsSettings({ isOpen, onClose }) {
                   </label>
                   {enableNotificationSound && (
                     <button
-                      onClick={async () => {
-                        const { playNotificationSound } = await import('../utils/notificationSound');
+                      onClick={() => {
                         // Temporarily enable sound for testing
-                        const currentSettings = JSON.parse(localStorage.getItem('qwen-tools-settings') || localStorage.getItem('qwen-tools-settings') || '{}');
+                        const currentSettings = JSON.parse(localStorage.getItem('qwen-tools-settings') || '{}');
                         localStorage.setItem('qwen-tools-settings', JSON.stringify({
                           ...currentSettings,
                           enableNotificationSound: true
