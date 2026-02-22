@@ -26,10 +26,40 @@ with open('scripts/audit-themes-ci.js', 'r', encoding='utf-8') as f:
     audit_template = f.read()
 
 # Replace THEMES_PLACEHOLDER with actual data
-new_audit = audit_template.replace(
-    'const THEMES_PLACEHOLDER = {};',
-    f'const THEMES = {themes_data};'
-)
+# Try placeholder first, then try to replace the existing THEMES object
+if 'const THEMES_PLACEHOLDER = {};' in audit_template:
+    new_audit = audit_template.replace(
+        'const THEMES_PLACEHOLDER = {};',
+        f'const THEMES = {themes_data};'
+    )
+else:
+    # Replace existing THEMES object (from 'const THEMES = {' to the matching closing brace)
+    # Find the start of THEMES definition
+    themes_start = audit_template.find('const THEMES = {')
+    if themes_start == -1:
+        print('ERROR: Could not find THEMES in audit script')
+        exit(1)
+    
+    # Find the end by counting braces
+    brace_count = 0
+    themes_end = themes_start
+    started = False
+    for i, char in enumerate(audit_template[themes_start:]):
+        if char == '{':
+            brace_count += 1
+            started = True
+        elif char == '}':
+            brace_count -= 1
+        if started and brace_count == 0:
+            themes_end = themes_start + i + 1
+            break
+    
+    if themes_end == themes_start:
+        print('ERROR: Could not find end of THEMES object')
+        exit(1)
+    
+    # Replace the THEMES object
+    new_audit = audit_template[:themes_start] + f'const THEMES = {themes_data};' + audit_template[themes_end:]
 
 # Write updated audit script with UTF-8
 with open('scripts/audit-themes-ci.js', 'w', encoding='utf-8') as f:
