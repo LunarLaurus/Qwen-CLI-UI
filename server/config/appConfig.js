@@ -11,17 +11,17 @@ import fs from 'fs';
 function getUserDataDir() {
   const platform = process.platform;
   const appName = 'qwen-cli-ui';
-  
+
   switch (platform) {
     case 'win32':
       // Windows: %APPDATA%\qwen-cli-ui
-      return process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming', appName);
+      return path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), appName);
     case 'darwin':
       // macOS: ~/Library/Application Support/qwen-cli-ui
       return path.join(os.homedir(), 'Library', 'Application Support', appName);
     case 'linux':
       // Linux: ~/.local/share/qwen-cli-ui (following XDG spec)
-      return process.env.XDG_DATA_HOME 
+      return process.env.XDG_DATA_HOME
         ? path.join(process.env.XDG_DATA_HOME, appName)
         : path.join(os.homedir(), '.local', 'share', appName);
     default:
