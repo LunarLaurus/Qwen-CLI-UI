@@ -29,7 +29,7 @@ const THEMES = {
       cardForeground: '222.2 84% 4.9%',
       popover: '0 0% 100%',
       popoverForeground: '222.2 84% 4.9%',
-      primary: '25 95% 53%',
+      primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '210 40% 96.1%',
       secondaryForeground: '222.2 47.4% 11.2%',
@@ -41,7 +41,7 @@ const THEMES = {
       destructiveForeground: '0 0% 100%',
       border: '214.3 31.8% 91.4%',
       input: '214.3 31.8% 91.4%',
-      ring: '25 95% 53%',
+      ring: '15 89% 40%',
       themeColor: '#ffffff'
     }
   },
@@ -329,7 +329,7 @@ const THEMES = {
       cardForeground: '210 40% 95%',
       popover: '217.2 91.2% 10%',
       popoverForeground: '210 40% 95%',
-      primary: '25 95% 53%',
+      primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '217.2 32.6% 17.5%',
       secondaryForeground: '210 40% 98%',
@@ -341,7 +341,7 @@ const THEMES = {
       destructiveForeground: '0 0% 100%',
       border: '217.2 32.6% 20%',
       input: '217.2 32.6% 20%',
-      ring: '25 95% 53%',
+      ring: '15 89% 40%',
       themeColor: '#141b24'
     }
   },

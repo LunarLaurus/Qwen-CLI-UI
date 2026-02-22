@@ -29,7 +29,7 @@ const THEMES = {
       cardForeground: '222.2 84% 4.9%',
       popover: '0 0% 100%',
       popoverForeground: '222.2 84% 4.9%',
-      primary: '25 95% 53%',
+      primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '210 40% 96.1%',
       secondaryForeground: '222.2 47.4% 11.2%',
@@ -41,7 +41,7 @@ const THEMES = {
       destructiveForeground: '0 0% 100%',
       border: '214.3 31.8% 91.4%',
       input: '214.3 31.8% 91.4%',
-      ring: '25 95% 53%'
+      ring: '15 89% 40%'
     }
   },
   dark: {
@@ -54,7 +54,7 @@ const THEMES = {
       cardForeground: '210 40% 95%',
       popover: '217.2 91.2% 10%',
       popoverForeground: '210 40% 95%',
-      primary: '25 95% 53%',
+      primary: '15 89% 40%',
       primaryForeground: '0 0% 100%',
       secondary: '217.2 32.6% 17.5%',
       secondaryForeground: '210 40% 98%',
@@ -66,7 +66,7 @@ const THEMES = {
       destructiveForeground: '0 0% 100%',
       border: '217.2 32.6% 20%',
       input: '217.2 32.6% 20%',
-      ring: '25 95% 53%'
+      ring: '15 89% 40%'
     }
   }
   // Additional themes would be loaded from actual ThemeContext in real CI
@@ -79,14 +79,13 @@ const WCAG_AA = {
 };
 
 // Color pairs to test
-// Note: primaryForeground uses 2.5:1 threshold as brand colors (especially orange)
-// often cannot meet 3.0:1 or 4.5:1 while maintaining brand identity.
-// This is a pragmatic exception for brand compliance.
+// Note: As of 2026-02-22, primary color uses darker orange (#c2410c)
+// which passes 4.5:1 WCAG AA with white text.
 const COLOR_PAIRS = [
   { fg: 'foreground', bg: 'background', label: 'Body text', required: 4.5 },
   { fg: 'cardForeground', bg: 'card', label: 'Card text', required: 4.5 },
   { fg: 'popoverForeground', bg: 'popover', label: 'Popover text', required: 4.5 },
-  { fg: 'primaryForeground', bg: 'primary', label: 'Primary button text', required: 2.5 },
+  { fg: 'primaryForeground', bg: 'primary', label: 'Primary button text', required: 4.5 },
   { fg: 'secondaryForeground', bg: 'secondary', label: 'Secondary button text', required: 4.5 },
   { fg: 'accentForeground', bg: 'accent', label: 'Accent text', required: 4.5 },
   { fg: 'mutedForeground', bg: 'muted', label: 'Muted text', required: 4.5 },
