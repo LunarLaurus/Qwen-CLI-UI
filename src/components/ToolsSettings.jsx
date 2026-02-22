@@ -326,10 +326,8 @@ function ToolsSettings({ isOpen, onClose }) {
         setProjectSortOrder(settings.projectSortOrder || 'name');
         setSelectedModel(settings.selectedModel || 'qwen3-coder-plus');
         setEnableNotificationSound(settings.enableNotificationSound || false);
-        // Theme is now managed by ThemeContext - apply saved theme if present
-        if (settings.selectedTheme) {
-          setTheme(settings.selectedTheme);
-        }
+        // Note: Theme is NOT reset on load - it's managed separately by ThemeContext
+        // and only changed when user explicitly clicks a theme option
       } else {
         // Set defaults
         setAllowedTools([]);
