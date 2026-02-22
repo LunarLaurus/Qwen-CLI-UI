@@ -749,6 +749,8 @@ export const ThemeProvider = ({ children }) => {
         if (themeColorMeta) {
           themeColorMeta.setAttribute('content', value);
         }
+        // Update favicon with theme color
+        updateFavicon(value);
       } else {
         const cssVar = `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
         root.style.setProperty(cssVar, value);
@@ -759,6 +761,25 @@ export const ThemeProvider = ({ children }) => {
     const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (statusBarMeta) {
       statusBarMeta.setAttribute('content', isDark ? 'black-translucent' : 'default');
+    }
+  };
+
+  // Update favicon with theme color
+  const updateFavicon = (themeColor) => {
+    const link = document.querySelector("link[rel~='icon']");
+    if (link) {
+      // Create SVG favicon with theme color
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <defs>
+          <linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'>
+            <stop offset='0%' style='stop-color:${themeColor};stop-opacity:1' />
+            <stop offset='100%' style='stop-color:${themeColor};stop-opacity:0.8' />
+          </linearGradient>
+        </defs>
+        <rect width='100' height='100' rx='20' fill='url(#grad)'/>
+        <text x='50' y='70' font-family='Arial, sans-serif' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>Q</text>
+      </svg>`;
+      link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
   };
 

@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
 import { Badge } from './ui/badge';
-import { X, Plus, Settings, Shield, AlertTriangle, Moon, Sun, Server, Edit3, Trash2, Play, Globe, Terminal, Zap, Volume2, Palette } from 'lucide-react';
+import { X, Plus, Settings, Shield, AlertTriangle, Moon, Sun, Server, Edit3, Trash2, Play, Globe, Terminal, Zap, Volume2, Palette, Monitor } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemePreviewCard from './ui/ThemePreviewCard';
 import { playNotificationSound } from '../utils/notificationSound';
