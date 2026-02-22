@@ -557,9 +557,9 @@ function Shell({ selectedProject, selectedSession, isActive }) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-900 w-full">
+    <div className="h-full flex flex-col bg-background w-full">
       {/* Header */}
-      <div className="flex-shrink-0 bg-gray-800 border-b border-gray-700 px-4 py-2">
+      <div className="flex-shrink-0 bg-card border-b border-border px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
@@ -613,14 +613,14 @@ function Shell({ selectedProject, selectedSession, isActive }) {
         
         {/* Loading state */}
         {!isInitialized && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90">
-            <div className="text-white">Loading terminal...</div>
+          <div className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-90">
+            <div className="text-foreground">Loading terminal...</div>
           </div>
         )}
-        
+
         {/* Connect button when not connected */}
         {isInitialized && !isConnected && !isConnecting && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90 p-4">
+          <div className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-90 p-4">
             <div className="text-center max-w-sm w-full">
               <button
                 onClick={connectToShell}

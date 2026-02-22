@@ -71,7 +71,7 @@ const MessageComponent = memo(({ message, index, prevMessage, createDiff, onFile
       {message.type === 'system' ? (
         /* System message in center */
         <div className="flex justify-center w-full py-2">
-          <div className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-lg px-4 py-2 text-sm max-w-md text-center">
+          <div className="bg-muted text-muted-foreground rounded-lg px-4 py-2 text-sm max-w-md text-center">
             {message.content}
           </div>
         </div>
@@ -186,8 +186,8 @@ const MessageComponent = memo(({ message, index, prevMessage, createDiff, onFile
                             </button>
                           </summary>
                           <div className="mt-3">
-                            <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                              <div className="flex items-center justify-between px-3 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <div className="bg-muted/50 border border-border rounded-lg overflow-hidden">
+                              <div className="flex items-center justify-between px-3 py-2 bg-muted border-b border-border">
                                 <button 
                                   onClick={() => onFileOpen && onFileOpen(input.file_path, {
                                     old_string: input.old_string,
@@ -291,8 +291,8 @@ const MessageComponent = memo(({ message, index, prevMessage, createDiff, onFile
                               </button>
                             </summary>
                             <div className="mt-3">
-                              <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                                <div className="flex items-center justify-between px-3 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                              <div className="bg-muted/50 border border-border rounded-lg overflow-hidden">
+                                <div className="flex items-center justify-between px-3 py-2 bg-muted border-b border-border">
                                   <button 
                                     onClick={() => onFileOpen && onFileOpen(input.file_path, {
                                       old_string: '',
@@ -1091,12 +1091,12 @@ const MessageComponent = memo(({ message, index, prevMessage, createDiff, onFile
                           </div>
                         ),
                         thead: ({children}) => (
-                          <thead className="bg-gray-50 dark:bg-gray-800">
+                          <thead className="bg-muted/50">
                             {children}
                           </thead>
                         ),
                         tbody: ({children}) => (
-                          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                          <tbody className="bg-card divide-y divide-border">
                             {children}
                           </tbody>
                         ),
@@ -2467,7 +2467,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
       </style>
       <div className="h-full flex flex-col">
         {/* Header with Clear Button */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Chat</h3>
             {chatMessages.length > 0 && (
@@ -2620,7 +2620,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           {/* Drag overlay */}
           {isDragActive && (
             <div className="absolute inset-0 bg-blue-500/20 border-2 border-dashed border-blue-500 rounded-lg flex items-center justify-center z-50">
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+              <div className="bg-card rounded-lg p-4 shadow-lg">
                 <svg className="w-8 h-8 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -2631,7 +2631,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           
           {/* Image attachments preview */}
           {attachedImages.length > 0 && (
-            <div className="mb-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div className="mb-2 p-2 bg-muted/50 rounded-lg">
               <div className="flex flex-wrap gap-2">
                 {attachedImages.map((file, index) => (
                   <ImageAttachment
@@ -2650,7 +2650,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
           
           {/* File dropdown - positioned outside dropzone to avoid conflicts */}
           {showFileDropdown && filteredFiles.length > 0 && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto z-50 backdrop-blur-sm">
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto z-50 backdrop-blur-sm">
               {filteredFiles.map((file, index) => (
                 <div
                   key={file.path}
@@ -2679,7 +2679,7 @@ function ChatInterface({ selectedProject, selectedSession, ws, sendMessage, mess
             </div>
           )}
           
-          <div {...getRootProps()} className={`chat-input-container relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-600 focus-within:ring-2 focus-within:ring-blue-500 dark:focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-200 ${isTextareaExpanded ? 'chat-input-expanded' : ''}`}>
+          <div {...getRootProps()} className={`chat-input-container relative bg-card rounded-2xl shadow-lg border border-border focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all duration-200 ${isTextareaExpanded ? 'chat-input-expanded' : ''}`}>
             <input {...getInputProps()} />
             <textarea
               ref={textareaRef}
