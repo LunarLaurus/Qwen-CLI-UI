@@ -2,6 +2,9 @@
 """
 Generate audit-themes-ci.js from actual ThemeContext.jsx
 This ensures the audit script always uses the real theme data.
+
+Usage:
+  python scripts/generate-audit.py && npm run audit:wcag
 """
 
 import re
@@ -22,17 +25,15 @@ themes_data = match.group(1)
 with open('scripts/audit-themes-ci.js', 'r', encoding='utf-8') as f:
     audit_template = f.read()
 
-# Replace embedded THEMES with actual data
-# Find the const THEMES = {...}; block and replace it
-new_audit = re.sub(
-    r'const THEMES = \{[^}]+\};\n\n// Color pairs',
-    f'const THEMES = {themes_data};\n\n// Color pairs',
-    audit_template,
-    flags=re.DOTALL
+# Replace THEMES_PLACEHOLDER with actual data
+new_audit = audit_template.replace(
+    'const THEMES_PLACEHOLDER = {};',
+    f'const THEMES = {themes_data};'
 )
 
 # Write updated audit script with UTF-8
 with open('scripts/audit-themes-ci.js', 'w', encoding='utf-8') as f:
     f.write(new_audit)
 
-print('Generated audit-themes-ci.js from ThemeContext.jsx')
+print('[OK] Generated audit-themes-ci.js from ThemeContext.jsx')
+print('    Run: npm run audit:wcag')

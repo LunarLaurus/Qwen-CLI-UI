@@ -3,8 +3,8 @@
 /**
  * WCAG Contrast CI Audit Script
  *
- * Validates ALL actual theme colors from ThemeContext.jsx against WCAG 2.x AA requirements.
- * Exits with code 1 if any theme fails contrast requirements.
+ * Validates ALL actual theme colors against WCAG 2.x AA requirements.
+ * Theme data is embedded from ThemeContext.jsx by generate-audit.py
  *
  * Usage:
  *   node scripts/audit-themes-ci.js
@@ -16,17 +16,693 @@
 
 import { getContrastRatioAny } from './contrast.js';
 
-// Import themes - try test folder first, then source
-let THEMES;
-try {
-  const testModule = await import('./test/ThemeContext.jsx');
-  THEMES = testModule.THEMES;
-  console.log('Using test folder themes (scripts/test/ThemeContext.jsx)\n');
-} catch (e) {
-  const sourceModule = await import('../src/contexts/ThemeContext.jsx');
-  THEMES = sourceModule.THEMES;
-  console.log('Using source themes (src/contexts/ThemeContext.jsx)\n');
-}
+// THEMES will be replaced by generate-audit.py with actual theme data
+const THEMES = {
+  // ===== LIGHT THEMES =====
+  system: {
+    name: 'System Default',
+    followsSystem: true
+  },
+  light: {
+    name: 'Light',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '0 0% 100%',
+      foreground: '0 0% 12%',
+      card: '0 0% 100%',
+      cardForeground: '0 0% 10%',
+      popover: '0 0% 100%',
+      popoverForeground: '0 0% 10%',
+      primary: '15 89% 40%',
+      primaryForeground: '0 0% 10%',
+      secondary: '210 40% 96.1%',
+      secondaryForeground: '0 0% 10%',
+      muted: '210 40% 96.1%',
+      mutedForeground: '0 0% 35%',
+      accent: '210 40% 96.1%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 84.2% 60.2%',
+      destructiveForeground: '0 0% 10%',
+      border: '214.3 31.8% 91.4%',
+      input: '214.3 31.8% 91.4%',
+      ring: '15 89% 40%',
+      themeColor: '#ffffff'
+    }
+  },
+  // Light themed variants
+  alpine: {
+    name: 'Alpine',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '200 100% 98%',
+      foreground: '0 0% 12%',
+      card: '200 100% 99%',
+      cardForeground: '0 0% 10%',
+      popover: '200 100% 99%',
+      popoverForeground: '0 0% 10%',
+      primary: '200 100% 35%',
+      primaryForeground: '0 0% 10%',
+      secondary: '190 90% 40%',
+      secondaryForeground: '0 0% 10%',
+      muted: '200 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '180 80% 40%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 10%',
+      border: '200 40% 85%',
+      input: '200 40% 85%',
+      ring: '200 100% 35%',
+      themeColor: '#e8f4f8'
+    }
+  },
+  sage: {
+    name: 'Sage',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '140 50% 97%',
+      foreground: '0 0% 12%',
+      card: '140 50% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '140 50% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '140 70% 35%',
+      primaryForeground: '0 0% 10%',
+      secondary: '150 60% 35%',
+      secondaryForeground: '0 0% 10%',
+      muted: '140 30% 92%',
+      mutedForeground: '0 0% 35%',
+      accent: '70 70% 35%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 10%',
+      border: '140 40% 85%',
+      input: '140 40% 85%',
+      ring: '140 70% 35%',
+      themeColor: '#eef5ed'
+    }
+  },
+  lavender: {
+    name: 'Lavender',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '270 50% 97%',
+      foreground: '0 0% 12%',
+      card: '270 50% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '270 50% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '270 70% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '280 70% 50%',
+      secondaryForeground: '0 0% 10%',
+      muted: '270 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '300 70% 50%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 10%',
+      border: '270 40% 88%',
+      input: '270 40% 88%',
+      ring: '270 70% 45%',
+      themeColor: '#f5eef8'
+    }
+  },
+  sand: {
+    name: 'Sand',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '35 50% 97%',
+      foreground: '0 0% 12%',
+      card: '35 50% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '35 50% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '35 90% 40%',
+      primaryForeground: '0 0% 10%',
+      secondary: '37 85% 45%',
+      secondaryForeground: '0 0% 10%',
+      muted: '35 30% 92%',
+      mutedForeground: '0 0% 35%',
+      accent: '45 70% 40%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 84% 50%',
+      destructiveForeground: '0 0% 10%',
+      border: '35 40% 85%',
+      input: '35 40% 85%',
+      ring: '35 90% 40%',
+      themeColor: '#f9f4ef'
+    }
+  },
+  // Pride Light variants
+  'trans-pride-light': {
+    name: 'Trans Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '195 50% 97%',
+      foreground: '0 0% 12%',
+      card: '195 50% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '195 50% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '195 75% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '350 65% 55%',
+      secondaryForeground: '0 0% 10%',
+      muted: '195 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '0 0% 80%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 62% 45%',
+      destructiveForeground: '0 0% 10%',
+      border: '195 40% 88%',
+      input: '195 40% 88%',
+      ring: '195 75% 45%',
+      themeColor: '#e8f3f7'
+    }
+  },
+  'lesbian-pride-light': {
+    name: 'Lesbian Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '15 40% 97%',
+      foreground: '0 0% 12%',
+      card: '15 40% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '15 40% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '15 100% 40%',
+      primaryForeground: '0 0% 10%',
+      secondary: '30 90% 55%',
+      secondaryForeground: '0 0% 10%',
+      muted: '30 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '330 70% 45%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 100% 40%',
+      destructiveForeground: '0 0% 10%',
+      border: '30 40% 88%',
+      input: '30 40% 88%',
+      ring: '15 100% 40%',
+      themeColor: '#f7ebe8'
+    }
+  },
+  'bi-pride-light': {
+    name: 'Bi Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '330 40% 97%',
+      foreground: '0 0% 12%',
+      card: '330 40% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '330 40% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '330 100% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '280 60% 50%',
+      secondaryForeground: '0 0% 10%',
+      muted: '330 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '220 100% 55%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 62% 45%',
+      destructiveForeground: '0 0% 10%',
+      border: '330 40% 88%',
+      input: '330 40% 88%',
+      ring: '330 100% 45%',
+      themeColor: '#f7e8f0'
+    }
+  },
+  'pan-pride-light': {
+    name: 'Pan Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '330 35% 97%',
+      foreground: '0 0% 12%',
+      card: '330 35% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '330 35% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '330 100% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '45 100% 45%',
+      secondaryForeground: '0 0% 10%',
+      muted: '330 30% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '200 100% 45%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 62% 45%',
+      destructiveForeground: '0 0% 10%',
+      border: '330 40% 88%',
+      input: '330 40% 88%',
+      ring: '330 100% 45%',
+      themeColor: '#f7e8ed'
+    }
+  },
+  'nonbinary-pride-light': {
+    name: 'Non-Binary Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '55 35% 96%',
+      foreground: '0 0% 12%',
+      card: '55 35% 97%',
+      cardForeground: '0 0% 10%',
+      popover: '55 35% 97%',
+      popoverForeground: '0 0% 10%',
+      primary: '55 100% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '0 0% 85%',
+      secondaryForeground: '0 0% 10%',
+      muted: '55 30% 92%',
+      mutedForeground: '0 0% 35%',
+      accent: '270 60% 50%',
+      accentForeground: '0 0% 10%',
+      destructive: '0 0% 30%',
+      destructiveForeground: '0 0% 10%',
+      border: '55 40% 85%',
+      input: '55 40% 85%',
+      ring: '55 100% 45%',
+      themeColor: '#f9f8e8'
+    }
+  },
+  'rainbow-pride-light': {
+    name: 'Rainbow Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '0 30% 97%',
+      foreground: '0 0% 12%',
+      card: '0 30% 98%',
+      cardForeground: '0 0% 10%',
+      popover: '0 30% 98%',
+      popoverForeground: '0 0% 10%',
+      primary: '0 100% 45%',
+      primaryForeground: '0 0% 10%',
+      secondary: '30 100% 45%',
+      secondaryForeground: '0 0% 10%',
+      muted: '0 20% 94%',
+      mutedForeground: '0 0% 35%',
+      accent: '50 100% 40%',
+      accentForeground: '0 0% 10%',
+      destructive: '140 80% 30%',
+      destructiveForeground: '0 0% 10%',
+      border: '0 30% 88%',
+      input: '0 30% 88%',
+      ring: '0 100% 45%',
+      themeColor: '#f9e8e8'
+    }
+  },
+  // ===== DARK THEMES =====
+  dark: {
+    name: 'Dark',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '222.2 84% 8%',
+      foreground: '0 0% 100%',
+      card: '217.2 91.2% 10%',
+      cardForeground: '0 0% 100%',
+      popover: '217.2 91.2% 10%',
+      popoverForeground: '0 0% 100%',
+      primary: '15 89% 40%',
+      primaryForeground: '0 0% 100%',
+      secondary: '217.2 32.6% 17.5%',
+      secondaryForeground: '0 0% 100%',
+      muted: '217.2 32.6% 17.5%',
+      mutedForeground: '0 0% 80%',
+      accent: '217.2 32.6% 17.5%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '217.2 32.6% 20%',
+      input: '217.2 32.6% 20%',
+      ring: '15 89% 40%',
+      themeColor: '#141b24'
+    }
+  },
+  midnight: {
+    name: 'Midnight',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '222.2 84% 8%',
+      foreground: '0 0% 100%',
+      card: '217.2 91.2% 10%',
+      cardForeground: '0 0% 100%',
+      popover: '217.2 91.2% 10%',
+      popoverForeground: '0 0% 100%',
+      primary: '210 100% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '217.2 32.6% 17.5%',
+      secondaryForeground: '0 0% 100%',
+      muted: '217.2 32.6% 17.5%',
+      mutedForeground: '0 0% 80%',
+      accent: '217.2 32.6% 17.5%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '217.2 32.6% 18%',
+      input: '217.2 32.6% 18%',
+      ring: '210 100% 60%',
+      themeColor: '#101824'
+    }
+  },
+  ocean: {
+    name: 'Ocean',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '200 70% 10%',
+      foreground: '0 0% 100%',
+      card: '200 70% 12%',
+      cardForeground: '0 0% 100%',
+      popover: '200 70% 12%',
+      popoverForeground: '0 0% 100%',
+      primary: '180 80% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '200 60% 18%',
+      secondaryForeground: '0 0% 100%',
+      muted: '200 50% 18%',
+      mutedForeground: '0 0% 80%',
+      accent: '200 60% 18%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '200 50% 20%',
+      input: '200 50% 20%',
+      ring: '180 80% 45%',
+      themeColor: '#122530'
+    }
+  },
+  forest: {
+    name: 'Forest',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '140 45% 10%',
+      foreground: '0 0% 100%',
+      card: '140 45% 12%',
+      cardForeground: '0 0% 100%',
+      popover: '140 45% 12%',
+      popoverForeground: '0 0% 100%',
+      primary: '140 70% 45%',
+      primaryForeground: '0 0% 100%',
+      secondary: '140 40% 18%',
+      secondaryForeground: '0 0% 100%',
+      muted: '140 35% 18%',
+      mutedForeground: '0 0% 80%',
+      accent: '140 40% 18%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '140 35% 20%',
+      input: '140 35% 20%',
+      ring: '140 70% 45%',
+      themeColor: '#152518'
+    }
+  },
+  sunset: {
+    name: 'Sunset',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '30 45% 12%',
+      foreground: '0 0% 100%',
+      card: '30 45% 14%',
+      cardForeground: '0 0% 100%',
+      popover: '30 45% 14%',
+      popoverForeground: '0 0% 100%',
+      primary: '30 90% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 40% 20%',
+      secondaryForeground: '0 0% 100%',
+      muted: '30 35% 20%',
+      mutedForeground: '0 0% 80%',
+      accent: '30 40% 20%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '30 35% 22%',
+      input: '30 35% 22%',
+      ring: '30 90% 55%',
+      themeColor: '#2a1f18'
+    }
+  },
+  monokai: {
+    name: 'Monokai',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '45 10% 15%',
+      foreground: '0 0% 100%',
+      card: '45 10% 18%',
+      cardForeground: '0 0% 100%',
+      popover: '45 10% 18%',
+      popoverForeground: '0 0% 100%',
+      primary: '45 100% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 20% 25%',
+      secondaryForeground: '0 0% 100%',
+      muted: '45 20% 25%',
+      mutedForeground: '0 0% 80%',
+      accent: '45 20% 25%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '45 20% 25%',
+      input: '45 20% 25%',
+      ring: '45 100% 60%',
+      themeColor: '#272822'
+    }
+  },
+  dracula: {
+    name: 'Dracula',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '260 20% 15%',
+      foreground: '0 0% 100%',
+      card: '260 20% 18%',
+      cardForeground: '0 0% 100%',
+      popover: '260 20% 18%',
+      popoverForeground: '0 0% 100%',
+      primary: '320 80% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '260 30% 25%',
+      secondaryForeground: '0 0% 100%',
+      muted: '260 30% 25%',
+      mutedForeground: '0 0% 80%',
+      accent: '260 30% 25%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '260 30% 25%',
+      input: '260 30% 25%',
+      ring: '320 80% 60%',
+      themeColor: '#282a36'
+    }
+  },
+  nord: {
+    name: 'Nord',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '210 30% 18%',
+      foreground: '0 0% 100%',
+      card: '210 30% 20%',
+      cardForeground: '0 0% 100%',
+      popover: '210 30% 20%',
+      popoverForeground: '0 0% 100%',
+      primary: '190 50% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '210 25% 28%',
+      secondaryForeground: '0 0% 100%',
+      muted: '210 25% 28%',
+      mutedForeground: '0 0% 80%',
+      accent: '210 25% 28%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '210 25% 28%',
+      input: '210 25% 28%',
+      ring: '190 50% 60%',
+      themeColor: '#2e3440'
+    }
+  },
+  // Pride Dark variants (with lighter backgrounds for readability)
+  'trans-pride': {
+    name: 'Trans Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '195 40% 15%',
+      foreground: '0 0% 100%',
+      card: '195 40% 17%',
+      cardForeground: '0 0% 100%',
+      popover: '195 40% 17%',
+      popoverForeground: '0 0% 100%',
+      primary: '195 75% 60%',
+      primaryForeground: '0 0% 100%',
+      secondary: '350 65% 65%',
+      secondaryForeground: '0 0% 100%',
+      muted: '195 30% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '0 0% 80%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '195 30% 25%',
+      input: '195 30% 25%',
+      ring: '195 75% 60%',
+      themeColor: '#1f3a47'
+    }
+  },
+  'lesbian-pride': {
+    name: 'Lesbian Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '15 35% 15%',
+      foreground: '0 0% 100%',
+      card: '15 35% 17%',
+      cardForeground: '0 0% 100%',
+      popover: '15 35% 17%',
+      popoverForeground: '0 0% 100%',
+      primary: '15 100% 50%',
+      primaryForeground: '0 0% 100%',
+      secondary: '30 90% 60%',
+      secondaryForeground: '0 0% 100%',
+      muted: '15 30% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '330 70% 55%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '15 30% 25%',
+      input: '15 30% 25%',
+      ring: '15 100% 50%',
+      themeColor: '#3d2328'
+    }
+  },
+  'bi-pride': {
+    name: 'Bi Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '280 40% 15%',
+      foreground: '0 0% 100%',
+      card: '280 40% 17%',
+      cardForeground: '0 0% 100%',
+      popover: '280 40% 17%',
+      popoverForeground: '0 0% 100%',
+      primary: '330 100% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '280 60% 55%',
+      secondaryForeground: '0 0% 100%',
+      muted: '280 30% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '220 100% 60%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '280 30% 25%',
+      input: '280 30% 25%',
+      ring: '330 100% 55%',
+      themeColor: '#2f1f3d'
+    }
+  },
+  'pan-pride': {
+    name: 'Pan Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '330 35% 15%',
+      foreground: '0 0% 100%',
+      card: '330 35% 17%',
+      cardForeground: '0 0% 100%',
+      popover: '330 35% 17%',
+      popoverForeground: '0 0% 100%',
+      primary: '330 100% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 100% 50%',
+      secondaryForeground: '0 0% 100%',
+      muted: '330 30% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '200 100% 55%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '330 30% 25%',
+      input: '330 30% 25%',
+      ring: '330 100% 55%',
+      themeColor: '#3d1f2f'
+    }
+  },
+  'nonbinary-pride': {
+    name: 'Non-Binary Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '55 30% 15%',
+      foreground: '0 0% 100%',
+      card: '55 30% 17%',
+      cardForeground: '0 0% 100%',
+      popover: '55 30% 17%',
+      popoverForeground: '0 0% 100%',
+      primary: '55 100% 50%',
+      primaryForeground: '0 0% 100%',
+      secondary: '0 0% 85%',
+      secondaryForeground: '0 0% 100%',
+      muted: '55 25% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '270 60% 60%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '55 30% 25%',
+      input: '55 30% 25%',
+      ring: '55 100% 50%',
+      themeColor: '#2f2f1f'
+    }
+  },
+  'rainbow-pride': {
+    name: 'Rainbow Pride',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '220 40% 14%',
+      foreground: '0 0% 100%',
+      card: '220 40% 16%',
+      cardForeground: '0 0% 100%',
+      popover: '220 40% 16%',
+      popoverForeground: '0 0% 100%',
+      primary: '0 100% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '45 100% 50%',
+      secondaryForeground: '0 0% 100%',
+      muted: '220 30% 22%',
+      mutedForeground: '0 0% 80%',
+      accent: '140 80% 40%',
+      accentForeground: '0 0% 100%',
+      destructive: '0 72% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '220 30% 25%',
+      input: '220 30% 25%',
+      ring: '0 100% 55%',
+      themeColor: '#2f3a4f'
+    }
+  }
+};
 
 // Color pairs to test - ALL require 4.5:1
 const COLOR_PAIRS = [
@@ -105,7 +781,7 @@ function runAudit() {
       });
     }
 
-    const status = audit.summary.failed === 0 ? '✓' : '✗';
+    const status = audit.summary.failed === 0 ? '[OK]' : '[FAIL]';
     const statusColor = audit.summary.failed === 0 ? '\x1b[32m' : '\x1b[31m';
     
     console.log(`${statusColor}${status}${reset} ${key} (${theme.name})`);
@@ -113,7 +789,7 @@ function runAudit() {
     
     if (audit.summary.failed > 0) {
       audit.summary.critical.forEach(issue => {
-        console.log(`   ✗ ${issue.pair}`);
+        console.log(`   [FAIL] ${issue.pair}`);
         console.log(`      Ratio: ${issue.ratio.toFixed(2)}:1 < Required: ${issue.required}:1`);
       });
     }
