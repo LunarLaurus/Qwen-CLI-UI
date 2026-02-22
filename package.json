@@ -23,7 +23,9 @@
     "clean": "rimraf dist node_modules/.vite",
     "rebuild": "npm run clean && npm install && npm run build",
     "build:win": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1",
-    "build:unix": "bash scripts/build.sh"
+    "build:unix": "bash scripts/build.sh",
+    "audit:wcag": "node scripts/audit-themes-ci.js",
+    "audit:wcag:full": "node scripts/audit-themes.js"
   },
   "keywords": [
     "qwen",

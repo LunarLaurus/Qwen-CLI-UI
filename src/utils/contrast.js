@@ -1,20 +1,35 @@
 /**
  * WCAG Contrast Utility
- * 
- * Implements Web Content Accessibility Guidelines (WCAG) 2.1 contrast calculations
+ *
+ * Implements Web Content Accessibility Guidelines (WCAG) 2.x contrast calculations
  * for ensuring text readability across all theme colors.
- * 
+ *
+ * Conformance Target: WCAG 2.x AA
+ * - Normal text (< 18pt regular, < 14pt bold): 4.5:1 minimum
+ * - Large text (≥ 18pt regular, ≥ 14pt bold): 3.0:1 minimum
+ * - UI component boundaries / focus indicators: 3.0:1
+ *
  * Reference: https://www.w3.org/WAI/GL/wiki/Relative_luminance
- * 
- * Contrast ratio formula: (L1 + 0.05) / (L2 + 0.05)
- * Where L1 is lighter color luminance, L2 is darker color luminance
- * 
- * WCAG Requirements:
- * - Normal text (AA): 4.5:1 minimum
- * - Large text (AA): 3:1 minimum (≥18pt regular or ≥14pt bold)
- * - Normal text (AAA): 7:1 minimum
- * - Large text (AAA): 4.5:1 minimum
+ * Specification: docs/WCAG_CONTRAST_SPEC.md
  */
+
+/**
+ * Parse hex color to RGB object
+ * @param {string} hex - Hex color (#RGB, #RRGGBB)
+ * @returns {{r: number, g: number, b: number}} RGB values 0-255
+ */
+export function hexToRgb(hex) {
+  const shorthand = hex.length === 4;
+  const r = parseInt(hex.slice(1, 2 + (shorthand ? 1 : 0)), 16);
+  const g = parseInt(hex.slice(2 + (shorthand ? 0 : 1), 4 + (shorthand ? 0 : 1)), 16);
+  const b = parseInt(hex.slice(3 + (shorthand ? 0 : 2), 6 + (shorthand ? 0 : 2)), 16);
+  
+  return {
+    r: shorthand ? r * 17 : r,
+    g: shorthand ? g * 17 : g,
+    b: shorthand ? b * 17 : b
+  };
+}
 
 /**
  * Convert HSL string (e.g., "200 80% 45%") to RGB object
@@ -55,19 +70,48 @@ export function hslToRgb(hsl) {
 }
 
 /**
- * Calculate relative luminance per WCAG 2.1
+ * Parse any color format to RGB object
+ * @param {string} color - Color in any format (#RGB, #RRGGBB, "h h s% l%")
+ * @returns {{r: number, g: number, b: number}} RGB values 0-255
+ */
+export function parseColor(color) {
+  if (!color) return { r: 0, g: 0, b: 0 };
+  
+  const trimmed = color.trim();
+  
+  // Hex format
+  if (trimmed.startsWith('#')) {
+    return hexToRgb(trimmed);
+  }
+  
+  // HSL format (space-separated: "200 80% 45%")
+  if (trimmed.includes('%') || /^\d+\s+\d+\s+\d+/.test(trimmed)) {
+    return hslToRgb(trimmed);
+  }
+  
+  // Default to black
+  return { r: 0, g: 0, b: 0 };
+}
+
+/**
+ * Calculate relative luminance per WCAG 2.x Section 1.4.1
  * https://www.w3.org/WAI/GL/wiki/Relative_luminance
- * 
- * @param {{r: number, g: number, b: number}} rgb - RGB color object
+ *
+ * Uses full precision floating-point arithmetic as required by spec.
+ * No rounding until final output.
+ *
+ * @param {{r: number, g: number, b: number}} rgb - RGB color object (0-255)
  * @returns {number} Relative luminance (0-1)
  */
 export function getRelativeLuminance(rgb) {
   const { r, g, b } = rgb;
 
-  // Convert sRGB to linear RGB
+  // Step 1: Normalize to [0, 1]
+  // Step 2: Linearize each channel per WCAG formula
   const linearize = (channel) => {
     const sRGB = channel / 255;
-    return sRGB <= 0.03928
+    // WCAG 2.x threshold: 0.04045 (NOT 0.03928)
+    return sRGB <= 0.04045
       ? sRGB / 12.92
       : Math.pow((sRGB + 0.055) / 1.055, 2.4);
   };
@@ -76,13 +120,17 @@ export function getRelativeLuminance(rgb) {
   const G = linearize(g);
   const B = linearize(b);
 
-  // Relative luminance formula
+  // Step 3: Compute relative luminance
+  // Coefficients from WCAG 2.x
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
 
 /**
- * Calculate WCAG contrast ratio between two luminance values
- * 
+ * Calculate WCAG contrast ratio per WCAG 2.x Section 1.4.1
+ *
+ * Formula: (L_light + 0.05) / (L_dark + 0.05)
+ * Uses full precision - no rounding before comparison.
+ *
  * @param {number} lum1 - Luminance of first color (0-1)
  * @param {number} lum2 - Luminance of second color (0-1)
  * @returns {number} Contrast ratio (1-21)
@@ -90,22 +138,45 @@ export function getRelativeLuminance(rgb) {
 export function getContrastRatio(lum1, lum2) {
   const lighter = Math.max(lum1, lum2);
   const darker = Math.min(lum1, lum2);
+  // Full precision division - no rounding
   return (lighter + 0.05) / (darker + 0.05);
 }
 
 /**
+ * Calculate contrast ratio between two colors in any format
+ *
+ * @param {string} color1 - First color (hex, HSL)
+ * @param {string} color2 - Second color (hex, HSL)
+ * @returns {number} Contrast ratio (1-21)
+ */
+export function getContrastRatioAny(color1, color2) {
+  const rgb1 = parseColor(color1);
+  const rgb2 = parseColor(color2);
+  const lum1 = getRelativeLuminance(rgb1);
+  const lum2 = getRelativeLuminance(rgb2);
+  return getContrastRatio(lum1, lum2);
+}
+
+/**
  * Calculate contrast ratio between two HSL colors
- * 
+ *
  * @param {string} hsl1 - First HSL color
  * @param {string} hsl2 - Second HSL color
  * @returns {number} Contrast ratio (1-21)
  */
 export function getContrastRatioHSL(hsl1, hsl2) {
-  const rgb1 = hslToRgb(hsl1);
-  const rgb2 = hslToRgb(hsl2);
-  const lum1 = getRelativeLuminance(rgb1);
-  const lum2 = getRelativeLuminance(rgb2);
-  return getContrastRatio(lum1, lum2);
+  return getContrastRatioAny(hsl1, hsl2);
+}
+
+/**
+ * Calculate contrast ratio between two hex colors
+ *
+ * @param {string} hex1 - First hex color
+ * @param {string} hex2 - Second hex color
+ * @returns {number} Contrast ratio (1-21)
+ */
+export function getContrastRatioHex(hex1, hex2) {
+  return getContrastRatioAny(hex1, hex2);
 }
 
 /**
