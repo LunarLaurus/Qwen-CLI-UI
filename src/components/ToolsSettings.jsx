@@ -8,7 +8,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { playNotificationSound } from '../utils/notificationSound';
 
 function ToolsSettings({ isOpen, onClose }) {
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const { isDarkMode, toggleDarkMode, currentTheme, setTheme, themes } = useTheme();
   const [allowedTools, setAllowedTools] = useState([]);
   const [disallowedTools, setDisallowedTools] = useState([]);
   const [newAllowedTool, setNewAllowedTool] = useState('');
@@ -44,7 +44,6 @@ function ToolsSettings({ isOpen, onClose }) {
   const [mcpToolsLoading, setMcpToolsLoading] = useState({});
   const [activeTab, setActiveTab] = useState('tools');
   const [selectedModel, setSelectedModel] = useState('qwen3-coder-plus');
-  const [selectedTheme, setSelectedTheme] = useState('system');
   const [enableNotificationSound, setEnableNotificationSound] = useState(false);
   const [multiUserEnabled, setMultiUserEnabled] = useState(false);
   const [allowRegistration, setAllowRegistration] = useState(true);
@@ -68,28 +67,15 @@ function ToolsSettings({ isOpen, onClose }) {
     'WebSearch'
   ];
   
-  // Qwen model options - Multiple models available
+  // Qwen model options - Updated for current availability
   const availableModels = [
-    { value: 'qwen3-coder-plus', label: 'Qwen 3 Coder Plus', description: 'Advanced Qwen coding model', provider: 'qwen' },
+    { value: 'qwen3-coder-plus', label: 'Qwen 3 Coder Plus', description: 'Most advanced Qwen coding model', provider: 'qwen' },
     { value: 'qwen3-coder-flash', label: 'Qwen 3 Coder Flash', description: 'Fast Qwen coding model', provider: 'qwen' },
-    { value: 'qwen-2.5-coder-32b', label: 'Qwen 2.5 Coder 32B', description: 'Previous generation coding model', provider: 'qwen' },
     { value: 'qwen-plus', label: 'Qwen Plus', description: 'Balanced Qwen model for general tasks', provider: 'qwen' },
     { value: 'qwen-max', label: 'Qwen Max', description: 'Most capable Qwen model', provider: 'qwen' },
-    { value: 'qwen-turbo', label: 'Qwen Turbo', description: 'Fastest Qwen model for quick tasks', provider: 'qwen' }
-  ];
-
-  // Theme options
-  const availableThemes = [
-    { value: 'system', label: 'System Default', description: 'Follow system preference' },
-    { value: 'light', label: 'Light', description: 'Clean light theme' },
-    { value: 'dark', label: 'Dark', description: 'Classic dark theme' },
-    { value: 'midnight', label: 'Midnight', description: 'Deep blue dark theme' },
-    { value: 'ocean', label: 'Ocean', description: 'Blue-green ocean theme' },
-    { value: 'forest', label: 'Forest', description: 'Green forest theme' },
-    { value: 'sunset', label: 'Sunset', description: 'Warm orange theme' },
-    { value: 'monokai', label: 'Monokai', description: 'Classic monokai colors' },
-    { value: 'dracula', label: 'Dracula', description: 'Popular dracula theme' },
-    { value: 'nord', label: 'Nord', description: 'Arctic blue theme' }
+    { value: 'qwen-turbo', label: 'Qwen Turbo', description: 'Fastest Qwen model for quick tasks', provider: 'qwen' },
+    { value: 'qwen2.5-coder-32b-instruct', label: 'Qwen 2.5 Coder 32B Instruct', description: 'Previous generation coding model (32B)', provider: 'qwen' },
+    { value: 'qwen2.5-coder-7b-instruct', label: 'Qwen 2.5 Coder 7B Instruct', description: 'Lightweight coding model (7B)', provider: 'qwen' }
   ];
 
   // MCP API functions
@@ -339,6 +325,10 @@ function ToolsSettings({ isOpen, onClose }) {
         setProjectSortOrder(settings.projectSortOrder || 'name');
         setSelectedModel(settings.selectedModel || 'qwen3-coder-plus');
         setEnableNotificationSound(settings.enableNotificationSound || false);
+        // Theme is now managed by ThemeContext - apply saved theme if present
+        if (settings.selectedTheme) {
+          setTheme(settings.selectedTheme);
+        }
       } else {
         // Set defaults
         setAllowedTools([]);
@@ -390,6 +380,7 @@ function ToolsSettings({ isOpen, onClose }) {
         skipPermissions,
         projectSortOrder,
         selectedModel,
+        selectedTheme: currentTheme,
         enableNotificationSound,
         lastUpdated: new Date().toISOString()
       };
@@ -698,6 +689,37 @@ function ToolsSettings({ isOpen, onClose }) {
             <option value="date">Recent Activity</option>
           </select>
         </div>
+      </div>
+    </div>
+
+    {/* Theme Selection */}
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <Sun className="w-5 h-5 text-yellow-500" />
+        <h3 className="text-lg font-medium text-foreground">
+          Theme Selection
+        </h3>
+      </div>
+      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+        <label className="block text-sm font-medium text-foreground mb-2">
+          Select Theme
+        </label>
+        <select
+          value={currentTheme}
+          onChange={(e) => setTheme(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+        >
+          {Object.entries(themes).map(([value, theme]) => (
+            <option key={value} value={value}>
+              {theme.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+          {themes[currentTheme]?.followsSystem 
+            ? 'Automatically follows your system preference for light/dark mode'
+            : `${themes[currentTheme]?.isDark ? 'Dark' : 'Light'} theme with custom color palette`}
+        </p>
       </div>
     </div>
   </div>
