@@ -38,7 +38,7 @@ function ThemePreviewCard({
           <Monitor className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           <div className="flex-1 min-w-0">
             <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
-              {theme.name}
+              {theme.name || 'System Default'}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Follows system preference
@@ -52,11 +52,40 @@ function ThemePreviewCard({
     );
   }
 
+  // Safely extract theme properties with defaults
+  const { name = 'Unknown', isDark = false, colors = null } = theme || {};
+  
+  // Handle missing colors gracefully
+  if (!colors) {
+    return (
+      <div
+        onClick={onClick}
+        className={`
+          cursor-pointer rounded-lg border p-3 transition-all duration-200
+          ${isSelected
+            ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+          }
+          ${size === 'small' ? 'p-2' : size === 'large' ? 'p-4' : 'p-3'}
+        `}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && onClick?.()}
+        aria-pressed={isSelected}
+      >
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+            {name}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   // Helper to convert HSL to CSS color
   const hslToCss = (hsl) => `hsl(${hsl})`;
 
-  const { name, isDark, colors } = theme;
-  const { primary, secondary, accent, ring, background, foreground } = colors || {};
+  const { primary, secondary, accent, ring, background, foreground } = colors;
 
   const sizeClasses = {
     small: {

@@ -92,15 +92,21 @@ const QuickSettingsPanel = ({
                   <span className="text-sm font-medium text-gray-900 dark:text-white">Current Theme</span>
                 </div>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {Object.entries(themes).map(([value, theme]) => (
-                    <ThemePreviewCard
-                      key={value}
-                      theme={theme}
-                      isSelected={currentTheme === value}
-                      onClick={() => setTheme(value)}
-                      size="small"
-                    />
-                  ))}
+                  {Object.entries(themes)
+                    .filter(([_, theme]) => !theme.followsSystem)
+                    .sort(([_, a], [__, b]) => {
+                      if (a.isDark === b.isDark) return a.name.localeCompare(b.name);
+                      return a.isDark ? 1 : -1;
+                    })
+                    .map(([value, theme]) => (
+                      <ThemePreviewCard
+                        key={value}
+                        theme={theme}
+                        isSelected={currentTheme === value}
+                        onClick={() => setTheme(value)}
+                        size="small"
+                      />
+                    ))}
                 </div>
               </div>
             </div>

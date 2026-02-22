@@ -706,20 +706,46 @@ function ToolsSettings({ isOpen, onClose }) {
           Select Theme
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto p-1">
-          {Object.entries(themes).map(([value, theme]) => (
-            <ThemePreviewCard
-              key={value}
-              theme={theme}
-              isSelected={currentTheme === value}
-              onClick={() => setTheme(value)}
-              size="medium"
-            />
-          ))}
+          {Object.entries(themes)
+            .filter(([_, theme]) => !theme.followsSystem) // Skip system theme in grid
+            .sort(([_, a], [__, b]) => {
+              // Sort: Light themes first, then Dark themes
+              if (a.isDark === b.isDark) return a.name.localeCompare(b.name);
+              return a.isDark ? 1 : -1;
+            })
+            .map(([value, theme]) => (
+              <ThemePreviewCard
+                key={value}
+                theme={theme}
+                isSelected={currentTheme === value}
+                onClick={() => setTheme(value)}
+                size="medium"
+              />
+            ))}
         </div>
         <p className="text-xs text-gray-600 dark:text-gray-400 mt-3">
           {themes[currentTheme]?.followsSystem
             ? 'Automatically follows your system preference for light/dark mode'
             : `${themes[currentTheme]?.isDark ? 'Dark' : 'Light'} theme with custom color palette`}
+        </p>
+      </div>
+      {/* System theme option */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            name="theme"
+            checked={currentTheme === 'system'}
+            onChange={() => setTheme('system')}
+            className="w-4 h-4 text-blue-600"
+          />
+          <div className="flex items-center gap-2">
+            <Monitor className="w-4 h-4 text-blue-500" />
+            <span className="font-medium text-foreground">System Default</span>
+          </div>
+        </label>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 ml-7">
+          Automatically switch between light and dark modes based on your OS settings
         </p>
       </div>
     </div>
