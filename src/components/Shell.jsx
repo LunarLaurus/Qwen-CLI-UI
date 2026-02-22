@@ -18,6 +18,106 @@ const xtermStyles = `
   }
 `;
 
+// Helper function to get CSS variable value
+const getCssVar = (name, fallback) => {
+  if (typeof document !== 'undefined') {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    // Convert HSL to RGB hex if needed
+    if (value.includes(' ')) {
+      // It's an HSL value, need to convert
+      const [h, s, l] = value.split(' ').map(v => parseFloat(v));
+      return hslToHex(h, s, l);
+    }
+    return value || fallback;
+  }
+  return fallback;
+};
+
+// Convert HSL to Hex color
+const hslToHex = (h, s, l) => {
+  s /= 100;
+  l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};
+
+// Get terminal theme colors from CSS variables
+const getTerminalTheme = () => {
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  
+  // Dark theme colors (default for terminal)
+  const darkTheme = {
+    background: '#0f172a',
+    foreground: '#f1f5f9',
+    cursor: '#f97316',
+    cursorAccent: '#0f172a',
+    selection: 'rgba(249, 115, 22, 0.3)',
+    
+    // ANSI colors - dark theme
+    black: '#1e293b',
+    red: '#f87171',
+    green: '#4ade80',
+    yellow: '#fbbf24',
+    blue: '#60a5fa',
+    magenta: '#c084fc',
+    cyan: '#22d3ee',
+    white: '#e2e8f0',
+    
+    brightBlack: '#475569',
+    brightRed: '#fca5a5',
+    brightGreen: '#86efac',
+    brightYellow: '#fde047',
+    brightBlue: '#93c5fd',
+    brightMagenta: '#d8b4fe',
+    brightCyan: '#67e8f9',
+    brightWhite: '#f8fafc',
+    
+    extendedAnsi: [
+      '#000000', '#800000', '#008000', '#808000',
+      '#000080', '#800080', '#008080', '#c0c0c0',
+      '#808080', '#ff0000', '#00ff00', '#ffff00',
+      '#0000ff', '#ff00ff', '#00ffff', '#ffffff'
+    ]
+  };
+  
+  // Light theme colors
+  const lightTheme = {
+    background: '#ffffff',
+    foreground: '#1e293b',
+    cursor: '#f97316',
+    cursorAccent: '#ffffff',
+    selection: 'rgba(249, 115, 22, 0.2)',
+    
+    // ANSI colors - light theme
+    black: '#1e293b',
+    red: '#dc2626',
+    green: '#16a34a',
+    yellow: '#ca8a04',
+    blue: '#2563eb',
+    magenta: '#9333ea',
+    cyan: '#0891b2',
+    white: '#64748b',
+    
+    brightBlack: '#475569',
+    brightRed: '#ef4444',
+    brightGreen: '#22c55e',
+    brightYellow: '#eab308',
+    brightBlue: '#3b82f6',
+    brightMagenta: '#a855f7',
+    brightCyan: '#06b6d4',
+    brightWhite: '#1e293b',
+    
+    extendedAnsi: darkTheme.extendedAnsi
+  };
+  
+  return isDark ? darkTheme : lightTheme;
+};
+
 // Inject styles
 if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
@@ -200,6 +300,8 @@ function Shell({ selectedProject, selectedSession, isActive }) {
       return;
     }
 
+    // Get theme colors based on current theme mode
+    const terminalTheme = getTerminalTheme();
 
     // Initialize new terminal
     terminal.current = new Terminal({
@@ -207,7 +309,7 @@ function Shell({ selectedProject, selectedSession, isActive }) {
       fontSize: 14,
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
       allowProposedApi: true, // Required for clipboard addon
-      allowTransparency: false,
+      allowTransparency: true,
       convertEol: true,
       scrollback: 10000,
       tabStopWidth: 4,
@@ -215,45 +317,8 @@ function Shell({ selectedProject, selectedSession, isActive }) {
       windowsMode: false,
       macOptionIsMeta: true,
       macOptionClickForcesSelection: false,
-      // Enhanced theme with full 16-color ANSI support + true colors
-      theme: {
-        // Basic colors
-        background: '#1e1e1e',
-        foreground: '#d4d4d4',
-        cursor: '#ffffff',
-        cursorAccent: '#1e1e1e',
-        selection: '#264f78',
-        selectionForeground: '#ffffff',
-        
-        // Standard ANSI colors (0-7)
-        black: '#000000',
-        red: '#cd3131',
-        green: '#0dbc79',
-        yellow: '#e5e510',
-        blue: '#2472c8',
-        magenta: '#bc3fbc',
-        cyan: '#11a8cd',
-        white: '#e5e5e5',
-        
-        // Bright ANSI colors (8-15)
-        brightBlack: '#666666',
-        brightRed: '#f14c4c',
-        brightGreen: '#23d18b',
-        brightYellow: '#f5f543',
-        brightBlue: '#3b8eea',
-        brightMagenta: '#d670d6',
-        brightCyan: '#29b8db',
-        brightWhite: '#ffffff',
-        
-        // Extended colors for better Qwen output
-        extendedAnsi: [
-          // 16-color palette extension for 256-color support
-          '#000000', '#800000', '#008000', '#808000',
-          '#000080', '#800080', '#008080', '#c0c0c0',
-          '#808080', '#ff0000', '#00ff00', '#ffff00',
-          '#0000ff', '#ff00ff', '#00ffff', '#ffffff'
-        ]
-      }
+      // Theme colors from CSS variables
+      theme: terminalTheme
     });
 
     fitAddon.current = new FitAddon();
@@ -564,25 +629,25 @@ function Shell({ selectedProject, selectedSession, isActive }) {
           <div className="flex items-center space-x-2">
             <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
             {selectedSession && (
-              <span className="text-xs text-blue-300">
+              <span className="text-xs text-primary">
                 ({selectedSession.summary.slice(0, 30)}...)
               </span>
             )}
             {!selectedSession && (
-              <span className="text-xs text-gray-400">(New Session)</span>
+              <span className="text-xs text-muted-foreground">(New Session)</span>
             )}
             {!isInitialized && (
-              <span className="text-xs text-yellow-400">(Initializing...)</span>
+              <span className="text-xs text-yellow-500">(Initializing...)</span>
             )}
             {isRestarting && (
-              <span className="text-xs text-blue-400">(Restarting...)</span>
+              <span className="text-xs text-blue-500">(Restarting...)</span>
             )}
           </div>
           <div className="flex items-center space-x-3">
             {isConnected && (
               <button
                 onClick={disconnectFromShell}
-                className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-1"
+                className="px-3 py-1 text-xs bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 flex items-center space-x-1"
                 title="Disconnect from shell"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -591,11 +656,11 @@ function Shell({ selectedProject, selectedSession, isActive }) {
                 <span>Disconnect</span>
               </button>
             )}
-            
+
             <button
               onClick={restartShell}
               disabled={isRestarting || isConnected}
-              className="text-xs text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+              className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
               title="Restart Shell (disconnect first)"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -620,11 +685,11 @@ function Shell({ selectedProject, selectedSession, isActive }) {
 
         {/* Connect button when not connected */}
         {isInitialized && !isConnected && !isConnecting && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background bg-opacity-90 p-4">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/90 p-4">
             <div className="text-center max-w-sm w-full">
               <button
                 onClick={connectToShell}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 text-base font-medium w-full sm:w-auto"
+                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 text-base font-medium w-full sm:w-auto"
                 title="Connect to shell"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -632,25 +697,25 @@ function Shell({ selectedProject, selectedSession, isActive }) {
                 </svg>
                 <span>Continue in Shell</span>
               </button>
-              <p className="text-gray-400 text-sm mt-3 px-2">
-                {selectedSession ? 
-                  `Resume session: ${selectedSession.summary.slice(0, 50)}...` : 
+              <p className="text-muted-foreground text-sm mt-3 px-2">
+                {selectedSession ?
+                  `Resume session: ${selectedSession.summary.slice(0, 50)}...` :
                   'Start a new Qwen session'
                 }
               </p>
             </div>
           </div>
         )}
-        
+
         {/* Connecting state */}
         {isConnecting && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90 p-4">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/90 p-4">
             <div className="text-center max-w-sm w-full">
-              <div className="flex items-center justify-center space-x-3 text-yellow-400">
-                <div className="w-6 h-6 animate-spin rounded-full border-2 border-yellow-400 border-t-transparent"></div>
-                <span className="text-base font-medium">Connecting to shell...</span>
+              <div className="flex items-center justify-center space-x-3 text-yellow-500">
+                <div className="w-6 h-6 animate-spin rounded-full border-2 border-yellow-500 border-t-transparent"></div>
+                <span className="text-base font-medium text-foreground">Connecting to shell...</span>
               </div>
-              <p className="text-gray-400 text-sm mt-3 px-2">
+              <p className="text-muted-foreground text-sm mt-3 px-2">
                 Starting Qwen CLI in {selectedProject.displayName}
               </p>
             </div>
