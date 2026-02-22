@@ -283,15 +283,32 @@ app.delete('/api/projects/:projectName', authenticateToken, async (req, res) => 
 app.post('/api/projects/create', authenticateToken, async (req, res) => {
   try {
     const { path: projectPath } = req.body;
-    
+
     if (!projectPath || !projectPath.trim()) {
       return res.status(400).json({ error: 'Project path is required' });
     }
-    
+
     const project = await addProjectManually(projectPath.trim());
     res.json({ success: true, project });
   } catch (error) {
     // console.error('Error creating project:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Folder picker endpoint - opens native dialog and returns selected path
+app.post('/api/folder-picker', authenticateToken, async (req, res) => {
+  try {
+    // For web browser context, we can't use native dialogs directly
+    // This endpoint is a placeholder for Electron/TWA integration
+    // For now, return an error indicating browser limitation
+    return res.status(400).json({ 
+      error: 'Native folder picker requires Electron or similar. Please paste the folder path manually.',
+      browserMode: true,
+      hint: 'Use relative paths like ./my-project or paste full path'
+    });
+  } catch (error) {
+    console.error('Error in folder picker:', error);
     res.status(500).json({ error: error.message });
   }
 });

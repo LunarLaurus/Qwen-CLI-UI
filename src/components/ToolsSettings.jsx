@@ -5,6 +5,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Badge } from './ui/badge';
 import { X, Plus, Settings, Shield, AlertTriangle, Moon, Sun, Server, Edit3, Trash2, Play, Globe, Terminal, Zap, Volume2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import ThemePreviewCard from './ui/ThemePreviewCard';
 import { playNotificationSound } from '../utils/notificationSound';
 
 function ToolsSettings({ isOpen, onClose }) {
@@ -701,22 +702,22 @@ function ToolsSettings({ isOpen, onClose }) {
         </h3>
       </div>
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium text-foreground mb-3">
           Select Theme
         </label>
-        <select
-          value={currentTheme}
-          onChange={(e) => setTheme(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto p-1">
           {Object.entries(themes).map(([value, theme]) => (
-            <option key={value} value={value}>
-              {theme.name}
-            </option>
+            <ThemePreviewCard
+              key={value}
+              theme={theme}
+              isSelected={currentTheme === value}
+              onClick={() => setTheme(value)}
+              size="medium"
+            />
           ))}
-        </select>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-          {themes[currentTheme]?.followsSystem 
+        </div>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mt-3">
+          {themes[currentTheme]?.followsSystem
             ? 'Automatically follows your system preference for light/dark mode'
             : `${themes[currentTheme]?.isDark ? 'Dark' : 'Light'} theme with custom color palette`}
         </p>

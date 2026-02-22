@@ -258,6 +258,397 @@ const THEMES = {
       ring: '190 50% 60%',
       themeColor: '#2e3440'
     }
+  },
+  // Light Mode Themes - Extended Color Palettes (3-5 colors each)
+  // Base colors tinted toward primary theme color
+  alpine: {
+    name: 'Alpine',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '200 100% 99%',
+      foreground: '200 100% 10%',
+      card: '200 100% 99%',
+      cardForeground: '200 100% 10%',
+      popover: '200 100% 99%',
+      popoverForeground: '200 100% 10%',
+      primary: '200 100% 45%',
+      primaryForeground: '200 100% 99%',
+      secondary: '190 90% 50%',
+      secondaryForeground: '200 100% 99%',
+      muted: '200 30% 96%',
+      mutedForeground: '200 20% 45%',
+      accent: '180 80% 55%',
+      accentForeground: '200 100% 99%',
+      destructive: '0 84% 60%',
+      destructiveForeground: '0 0% 100%',
+      border: '200 30% 90%',
+      input: '200 30% 90%',
+      ring: '190 100% 45%',
+      themeColor: '#f5f9fb'
+    }
+  },
+  sage: {
+    name: 'Sage',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '140 40% 98%',
+      foreground: '140 70% 10%',
+      card: '140 40% 98%',
+      cardForeground: '140 70% 10%',
+      popover: '140 40% 98%',
+      popoverForeground: '140 70% 10%',
+      primary: '140 70% 45%',
+      primaryForeground: '140 40% 98%',
+      secondary: '150 60% 40%',
+      secondaryForeground: '140 40% 98%',
+      muted: '140 30% 96%',
+      mutedForeground: '140 20% 45%',
+      accent: '70 80% 45%',
+      accentForeground: '140 40% 98%',
+      destructive: '0 84% 60%',
+      destructiveForeground: '0 0% 100%',
+      border: '140 30% 90%',
+      input: '140 30% 90%',
+      ring: '70 80% 45%',
+      themeColor: '#f7fbf6'
+    }
+  },
+  lavender: {
+    name: 'Lavender',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '270 40% 98%',
+      foreground: '270 90% 15%',
+      card: '270 40% 98%',
+      cardForeground: '270 90% 15%',
+      popover: '270 40% 98%',
+      popoverForeground: '270 90% 15%',
+      primary: '270 90% 55%',
+      primaryForeground: '270 40% 98%',
+      secondary: '280 80% 60%',
+      secondaryForeground: '270 40% 98%',
+      muted: '270 30% 96%',
+      mutedForeground: '270 20% 50%',
+      accent: '300 70% 65%',
+      accentForeground: '270 40% 98%',
+      destructive: '0 84% 60%',
+      destructiveForeground: '0 0% 100%',
+      border: '270 30% 90%',
+      input: '270 30% 90%',
+      ring: '280 90% 65%',
+      themeColor: '#f8f5fc'
+    }
+  },
+  sand: {
+    name: 'Sand',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '35 50% 98%',
+      foreground: '35 90% 15%',
+      card: '35 50% 98%',
+      cardForeground: '35 90% 15%',
+      popover: '35 50% 98%',
+      popoverForeground: '35 90% 15%',
+      primary: '35 90% 45%',
+      primaryForeground: '35 50% 98%',
+      secondary: '37 85% 50%',
+      secondaryForeground: '35 50% 98%',
+      muted: '35 30% 96%',
+      mutedForeground: '35 20% 45%',
+      accent: '45 70% 55%',
+      accentForeground: '35 50% 98%',
+      destructive: '0 84% 60%',
+      destructiveForeground: '0 0% 100%',
+      border: '35 30% 90%',
+      input: '35 30% 90%',
+      ring: '37 90% 55%',
+      themeColor: '#fbf8f3'
+    }
+  },
+  // LGBT+ Pride Themes - Dark & Light Variants with Extended Palettes (3-5 colors)
+  // Trans Pride - Dark (3 flag colors + white/black for extended palette)
+  'trans-pride': {
+    name: 'Trans Pride (Dark)',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '220 50% 10%',
+      foreground: '0 0% 95%',
+      card: '220 50% 12%',
+      cardForeground: '0 0% 95%',
+      popover: '220 50% 12%',
+      popoverForeground: '0 0% 95%',
+      primary: '195 75% 68%',
+      primaryForeground: '195 40% 15%',
+      secondary: '350 65% 73%',
+      secondaryForeground: '350 40% 15%',
+      muted: '220 30% 20%',
+      mutedForeground: '220 20% 70%',
+      accent: '0 0% 85%',
+      accentForeground: '0 0% 15%',
+      destructive: '0 62% 30%',
+      destructiveForeground: '0 0% 95%',
+      border: '220 30% 20%',
+      input: '220 30% 20%',
+      ring: '195 75% 68%',
+      themeColor: '#1a2330'
+    }
+  },
+  // Trans Pride - Light
+  'trans-pride-light': {
+    name: 'Trans Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '0 0% 98%',
+      foreground: '220 30% 15%',
+      card: '0 0% 100%',
+      cardForeground: '220 30% 15%',
+      popover: '0 0% 100%',
+      popoverForeground: '220 30% 15%',
+      primary: '195 75% 55%',
+      primaryForeground: '0 0% 100%',
+      secondary: '350 65% 60%',
+      secondaryForeground: '0 0% 100%',
+      muted: '220 30% 96%',
+      mutedForeground: '220 20% 45%',
+      accent: '0 0% 90%',
+      accentForeground: '0 0% 15%',
+      destructive: '0 62% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '220 30% 90%',
+      input: '220 30% 90%',
+      ring: '195 75% 55%',
+      themeColor: '#f0f5f8'
+    }
+  },
+  // Lesbian Pride - Light (tinted toward orange/primary)
+  'lesbian-pride-light': {
+    name: 'Lesbian Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '15 30% 98%',
+      foreground: '15 40% 15%',
+      card: '15 30% 98%',
+      cardForeground: '15 40% 15%',
+      popover: '15 30% 98%',
+      popoverForeground: '15 40% 15%',
+      primary: '15 100% 45%',
+      primaryForeground: '15 30% 98%',
+      secondary: '30 100% 60%',
+      secondaryForeground: '15 30% 98%',
+      muted: '30 30% 96%',
+      mutedForeground: '30 20% 45%',
+      accent: '330 70% 50%',
+      accentForeground: '15 30% 98%',
+      destructive: '0 100% 42%',
+      destructiveForeground: '0 40% 95%',
+      border: '30 30% 90%',
+      input: '30 30% 90%',
+      ring: '15 100% 45%',
+      themeColor: '#fbf5f3'
+    }
+  },
+  // Bi Pride - Dark (3 flag colors)
+  'bi-pride': {
+    name: 'Bi Pride (Dark)',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '220 50% 10%',
+      foreground: '220 30% 95%',
+      card: '220 50% 12%',
+      cardForeground: '220 30% 95%',
+      popover: '220 50% 12%',
+      popoverForeground: '220 30% 95%',
+      primary: '330 100% 43%',
+      primaryForeground: '330 40% 95%',
+      secondary: '280 50% 46%',
+      secondaryForeground: '280 40% 95%',
+      muted: '220 30% 20%',
+      mutedForeground: '220 20% 70%',
+      accent: '220 100% 55%',
+      accentForeground: '220 40% 95%',
+      destructive: '0 62% 30%',
+      destructiveForeground: '220 30% 95%',
+      border: '220 30% 20%',
+      input: '220 30% 20%',
+      ring: '330 100% 43%',
+      themeColor: '#1a0f25'
+    }
+  },
+  // Bi Pride - Light (tinted toward pink/primary)
+  'bi-pride-light': {
+    name: 'Bi Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '330 30% 98%',
+      foreground: '330 30% 15%',
+      card: '330 30% 98%',
+      cardForeground: '330 30% 15%',
+      popover: '330 30% 98%',
+      popoverForeground: '330 30% 15%',
+      primary: '330 100% 50%',
+      primaryForeground: '330 30% 98%',
+      secondary: '280 50% 55%',
+      secondaryForeground: '330 30% 98%',
+      muted: '220 30% 96%',
+      mutedForeground: '220 20% 45%',
+      accent: '220 100% 65%',
+      accentForeground: '330 30% 98%',
+      destructive: '0 62% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '220 30% 90%',
+      input: '220 30% 90%',
+      ring: '330 100% 50%',
+      themeColor: '#fbf3f7'
+    }
+  },
+  // Pan Pride - Dark (3 flag colors)
+  'pan-pride': {
+    name: 'Pan Pride (Dark)',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '220 50% 10%',
+      foreground: '220 30% 95%',
+      card: '220 50% 12%',
+      cardForeground: '220 30% 95%',
+      popover: '220 50% 12%',
+      popoverForeground: '220 30% 95%',
+      primary: '330 100% 56%',
+      primaryForeground: '330 40% 15%',
+      secondary: '45 100% 56%',
+      secondaryForeground: '45 40% 15%',
+      muted: '220 30% 20%',
+      mutedForeground: '220 20% 70%',
+      accent: '200 100% 56%',
+      accentForeground: '200 40% 95%',
+      destructive: '0 62% 30%',
+      destructiveForeground: '220 30% 95%',
+      border: '220 30% 20%',
+      input: '220 30% 20%',
+      ring: '330 100% 56%',
+      themeColor: '#1a1525'
+    }
+  },
+  // Pan Pride - Light (tinted toward pink/primary)
+  'pan-pride-light': {
+    name: 'Pan Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '330 25% 98%',
+      foreground: '330 30% 15%',
+      card: '330 25% 98%',
+      cardForeground: '330 30% 15%',
+      popover: '330 25% 98%',
+      popoverForeground: '330 30% 15%',
+      primary: '330 100% 50%',
+      primaryForeground: '330 25% 98%',
+      secondary: '45 100% 45%',
+      secondaryForeground: '330 25% 98%',
+      muted: '220 30% 96%',
+      mutedForeground: '220 20% 45%',
+      accent: '200 100% 45%',
+      accentForeground: '330 25% 98%',
+      destructive: '0 62% 50%',
+      destructiveForeground: '0 0% 100%',
+      border: '220 30% 90%',
+      input: '220 30% 90%',
+      ring: '330 100% 50%',
+      themeColor: '#fbf3f6'
+    }
+  },
+  // Non-Binary Pride - Light (tinted toward yellow/primary)
+  'nonbinary-pride-light': {
+    name: 'Non-Binary Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '55 30% 98%',
+      foreground: '55 30% 15%',
+      card: '55 30% 98%',
+      cardForeground: '55 30% 15%',
+      popover: '55 30% 98%',
+      popoverForeground: '55 30% 15%',
+      primary: '55 100% 50%',
+      primaryForeground: '55 30% 98%',
+      secondary: '0 0% 90%',
+      secondaryForeground: '0 0% 15%',
+      muted: '220 30% 96%',
+      mutedForeground: '220 20% 45%',
+      accent: '270 60% 50%',
+      accentForeground: '55 30% 98%',
+      destructive: '0 0% 30%',
+      destructiveForeground: '0 0% 100%',
+      border: '220 30% 90%',
+      input: '220 30% 90%',
+      ring: '55 100% 50%',
+      themeColor: '#fbfaf3'
+    }
+  },
+  // Rainbow Pride - Dark (6 stripe colors - use 5 for palette)
+  'rainbow-pride': {
+    name: 'Rainbow Pride (Dark)',
+    followsSystem: false,
+    isDark: true,
+    colors: {
+      background: '220 50% 10%',
+      foreground: '220 30% 95%',
+      card: '220 50% 12%',
+      cardForeground: '220 30% 95%',
+      popover: '220 50% 12%',
+      popoverForeground: '220 30% 95%',
+      primary: '0 100% 50%',
+      primaryForeground: '0 40% 95%',
+      secondary: '30 100% 50%',
+      secondaryForeground: '30 40% 15%',
+      muted: '220 30% 20%',
+      mutedForeground: '220 20% 70%',
+      accent: '50 100% 50%',
+      accentForeground: '50 40% 15%',
+      destructive: '140 100% 35%',
+      destructiveForeground: '140 40% 95%',
+      border: '220 30% 20%',
+      input: '220 30% 20%',
+      ring: '0 100% 50%',
+      themeColor: '#1a1015'
+    }
+  },
+  // Rainbow Pride - Light (tinted toward red/primary)
+  'rainbow-pride-light': {
+    name: 'Rainbow Pride (Light)',
+    followsSystem: false,
+    isDark: false,
+    colors: {
+      background: '0 20% 98%',
+      foreground: '0 20% 15%',
+      card: '0 20% 98%',
+      cardForeground: '0 20% 15%',
+      popover: '0 20% 98%',
+      popoverForeground: '0 20% 15%',
+      primary: '0 100% 50%',
+      primaryForeground: '0 20% 98%',
+      secondary: '30 100% 45%',
+      secondaryForeground: '0 20% 98%',
+      muted: '220 30% 96%',
+      mutedForeground: '220 20% 45%',
+      accent: '50 100% 45%',
+      accentForeground: '0 20% 98%',
+      destructive: '140 100% 35%',
+      destructiveForeground: '140 40% 95%',
+      border: '220 30% 90%',
+      input: '220 30% 90%',
+      ring: '0 100% 50%',
+      themeColor: '#fbf3f3'
+    }
   }
 };
 
@@ -281,20 +672,30 @@ export const ThemeProvider = ({ children }) => {
       setIsSystemDark(systemIsDark);
       setIsDarkMode(systemIsDark);
       const systemTheme = systemIsDark ? THEMES.dark : THEMES.light;
-      applyColors(systemTheme.colors);
+      applyColors(systemTheme.colors, systemIsDark);
       localStorage.setItem('theme', 'system');
       return;
     }
 
     // Handle explicit themes
     setIsDarkMode(theme.isDark);
-    applyColors(theme.colors);
+    applyColors(theme.colors, theme.isDark);
     localStorage.setItem('theme', themeName);
   };
 
   // Helper to apply color variables to document
-  const applyColors = (colors) => {
+  const applyColors = (colors, isDark) => {
     const root = document.documentElement;
+    
+    // Update dark mode class for Tailwind CSS
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+    
     Object.entries(colors).forEach(([key, value]) => {
       if (key === 'themeColor') {
         const themeColorMeta = document.querySelector('meta[name="theme-color"]');
@@ -310,7 +711,7 @@ export const ThemeProvider = ({ children }) => {
     // Update iOS status bar
     const statusBarMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (statusBarMeta) {
-      statusBarMeta.setAttribute('content', colors.isDark ? 'black-translucent' : 'default');
+      statusBarMeta.setAttribute('content', isDark ? 'black-translucent' : 'default');
     }
   };
 

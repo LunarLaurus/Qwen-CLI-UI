@@ -39,13 +39,13 @@ async function saveProjectConfig(config) {
 async function generateDisplayName(projectName, actualProjectDir = null) {
   // Use actual project directory if provided, otherwise decode from project name
   let projectPath = actualProjectDir || projectName.replace(/-/g, '/');
-  
+
   // Try to read package.json from the project path
   try {
     const packageJsonPath = path.join(projectPath, 'package.json');
     const packageData = await fs.readFile(packageJsonPath, 'utf8');
     const packageJson = JSON.parse(packageData);
-    
+
     // Return the name from package.json if it exists
     if (packageJson.name) {
       return packageJson.name;
@@ -53,19 +53,31 @@ async function generateDisplayName(projectName, actualProjectDir = null) {
   } catch (error) {
     // Fall back to path-based naming if package.json doesn't exist or can't be read
   }
-  
-  // If it starts with /, it's an absolute path
+
+  // Handle Windows absolute paths (e.g., C:\Users\...)
+  if (/^[A-Z]:\\/i.test(projectPath)) {
+    const parts = projectPath.split(/[\\/]/).filter(Boolean);
+    if (parts.length > 3) {
+      // Show last 2 folders with ellipsis: ".../git projects/Qwen-CLI-UI"
+      return `.../${parts.slice(-2).join('/')}`;
+    } else {
+      // Show just the folder name: "Qwen-CLI-UI"
+      return parts[parts.length - 1];
+    }
+  }
+
+  // Handle Unix absolute paths (e.g., /home/user/...)
   if (projectPath.startsWith('/')) {
     const parts = projectPath.split('/').filter(Boolean);
     if (parts.length > 3) {
-      // Show last 2 folders with ellipsis: "...projects/myapp"
+      // Show last 2 folders with ellipsis: ".../projects/myapp"
       return `.../${parts.slice(-2).join('/')}`;
     } else {
       // Show full path if short: "/home/user"
       return projectPath;
     }
   }
-  
+
   return projectPath;
 }
 

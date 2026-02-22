@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import DarkModeToggle from './DarkModeToggle';
 import { useTheme } from '../contexts/ThemeContext';
+import ThemePreviewCard, { ThemePreviewMini } from './ui/ThemePreviewCard';
 
 const QuickSettingsPanel = ({
   isOpen,
@@ -99,17 +100,17 @@ const QuickSettingsPanel = ({
                   <Palette className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-900 dark:text-white">Current Theme</span>
                 </div>
-                <select
-                  value={currentTheme}
-                  onChange={(e) => setTheme(e.target.value)}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                >
+                <div className="space-y-2 max-h-48 overflow-y-auto">
                   {Object.entries(themes).map(([value, theme]) => (
-                    <option key={value} value={value}>
-                      {theme.name}
-                    </option>
+                    <ThemePreviewCard
+                      key={value}
+                      theme={theme}
+                      isSelected={currentTheme === value}
+                      onClick={() => setTheme(value)}
+                      size="small"
+                    />
                   ))}
-                </select>
+                </div>
               </div>
             </div>
 

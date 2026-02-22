@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -69,7 +69,9 @@ function Sidebar({
   const [generatingSummary, setGeneratingSummary] = useState({});
   const [searchFilter, setSearchFilter] = useState('');
 
-  
+  // Ref for folder picker input
+  const fileInputRef = useRef(null);
+
   // Starred projects state - persisted in localStorage
   const [starredProjects, setStarredProjects] = useState(() => {
     try {
@@ -362,6 +364,100 @@ function Sidebar({
     setNewProjectPath('');
   };
 
+  // Handle browse button click to open folder picker
+  const handleBrowse = async () => {
+    // Try the modern File System Access API (Chrome/Edge 86+)
+    if ('showDirectoryPicker' in window) {
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        
+        // The File System Access API doesn't directly give full path
+        // But we can use the handle to work with the directory
+        // For this app, we'll store a reference and use the name
+        const folderName = dirHandle.name;
+        
+        // Since we can't get the full path in browser, use a relative reference
+        // The backend will need to handle this appropriately
+        const relativePath = `./${folderName}`;
+        
+        setNewProjectPath(relativePath);
+        console.log('Directory selected:', folderName);
+        console.log('Note: Using relative path. Full path access requires Electron or similar.');
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.warn('File System Access API failed:', err);
+        }
+        // User cancelled or API failed - fall through to file input
+      }
+    }
+    
+    // Fallback to hidden file input (gives limited path info in browsers)
+    fileInputRef.current?.click();
+  };
+
+  // Handle folder selection from file picker
+  const handleFolderSelect = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      let dirPath = '';
+      
+      // webkitRelativePath gives path relative to selected folder
+      // e.g., "MyProject/src/index.js" when MyProject folder was selected
+      if (file.webkitRelativePath) {
+        const relativePath = file.webkitRelativePath;
+        const parts = relativePath.split(/[\\/]/);
+        
+        // The first part is the selected folder name
+        const folderName = parts[0];
+        
+        // In browser context, we can only get the folder name
+        // Full absolute paths are not exposed for security reasons
+        // Show helpful guidance to the user
+        dirPath = `./${folderName}`;
+        
+        console.log('Folder selected:', folderName);
+        console.log('Using relative path:', dirPath);
+        
+        // Show info toast/message to user
+        const needsFullPath = confirm(
+          `Selected folder: ${folderName}\n\n` +
+          `Browser security limits path access. Using relative path: ${dirPath}\n\n` +
+          `Click OK to keep this, or Cancel to enter full path manually.`
+        );
+        
+        if (!needsFullPath) {
+          const manualPath = prompt('Enter the full folder path:', 'C:\\path\\to\\' + folderName);
+          if (manualPath) {
+            dirPath = manualPath.trim();
+          }
+        }
+      } else if (file.path) {
+        // This works in Electron or Node-webkit where file.path is exposed
+        try {
+          const pathModule = await import('path');
+          dirPath = pathModule.dirname(file.path);
+        } catch (e) {
+          // Fallback for browser
+          dirPath = file.path.substring(0, file.path.lastIndexOf('\\'));
+        }
+      } else {
+        // Standard browser - no path info available
+        const manualPath = prompt(
+          'Browser security prevents automatic path detection.\n\n' +
+          'Please enter the folder path manually:',
+          'C:\\path\\to\\your\\project'
+        );
+        dirPath = manualPath ? manualPath.trim() : '';
+      }
+      
+      setNewProjectPath(dirPath);
+    }
+    // Reset the input so the same folder can be selected again
+    e.target.value = '';
+  };
+
   const loadMoreSessions = async (project) => {
     // Check if we can load more sessions
     const canLoadMore = project.sessionMeta?.hasMore !== false;
@@ -501,16 +597,36 @@ function Sidebar({
               <FolderPlus className="w-4 h-4" />
               Create New Project
             </div>
-            <Input
-              value={newProjectPath}
-              onChange={(e) => setNewProjectPath(e.target.value)}
-              placeholder="/path/to/project or relative/path"
-              className="text-sm focus:ring-2 focus:ring-primary/20"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') createNewProject();
-                if (e.key === 'Escape') cancelNewProject();
-              }}
+            <div className="flex gap-2">
+              <Input
+                value={newProjectPath}
+                onChange={(e) => setNewProjectPath(e.target.value)}
+                placeholder="/path/to/project or relative/path"
+                className="text-sm focus:ring-2 focus:ring-primary/20 flex-1"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') createNewProject();
+                  if (e.key === 'Escape') cancelNewProject();
+                }}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleBrowse}
+                className="h-9 px-4 text-xs hover:bg-accent transition-colors whitespace-nowrap"
+              >
+                Browse
+              </Button>
+            </div>
+            {/* Hidden file input for folder selection */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              webkitdirectory="true"
+              directory="true"
+              multiple
+              className="hidden"
+              onChange={handleFolderSelect}
             />
             <div className="flex gap-2">
               <Button
@@ -555,18 +671,27 @@ function Sidebar({
               </div>
               
               <div className="space-y-3">
-                <Input
-                  value={newProjectPath}
-                  onChange={(e) => setNewProjectPath(e.target.value)}
-                  placeholder="/path/to/project or relative/path"
-                  className="text-sm h-10 rounded-md focus:border-primary transition-colors"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') createNewProject();
-                    if (e.key === 'Escape') cancelNewProject();
-                  }}
-                />
-                
+                <div className="flex gap-2">
+                  <Input
+                    value={newProjectPath}
+                    onChange={(e) => setNewProjectPath(e.target.value)}
+                    placeholder="/path/to/project or relative/path"
+                    className="text-sm h-10 rounded-md focus:border-primary transition-colors flex-1"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') createNewProject();
+                      if (e.key === 'Escape') cancelNewProject();
+                    }}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={handleBrowse}
+                    className="h-10 px-4 text-sm rounded-md active:scale-95 transition-transform whitespace-nowrap"
+                  >
+                    Browse
+                  </Button>
+                </div>
+
                 <div className="flex gap-2">
                   <Button
                     onClick={cancelNewProject}
